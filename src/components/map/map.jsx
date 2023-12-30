@@ -5,7 +5,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import Loader from "../../assets/images/Loader";
 import MapContol from "./mapContol";
 import Plus from "../../assets/images/Plus";
-import Minus from "../../assets/images/minus";
+import Minus from "../../assets/images/Minus";
 import Location from "../../assets/images/Location";
 import List from "../../assets/images/List";
 import Layer from "../../assets/images/Layer";
