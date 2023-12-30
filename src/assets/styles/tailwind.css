@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "SF Pro Text";
+  src: url("../fonts/sf-pro-text.woff2") format("woff2");
+}
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("../fonts/sf-pro-display_medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "SF Mono";
+  src: url("../fonts/sf-mono.woff2") format("woff2");
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    font-family: "SF Pro Text";
+  }
+  h1 {
+    font-family: "SF Pro Display";
+  }
+  code {
+    font-family: "SF Mono";
+  }
+}

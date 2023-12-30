@@ -1,0 +1,34 @@
+@import "./assets/styles/tailwind.css";
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app-logo:hover > svg > path {
+  fill: #ffffff;
+}
+
+a[href^="http://maps.google.com/maps"]
+{
+  display: none !important;
+}
+a[href^="https://maps.google.com/maps"]
+{
+  display: none !important;
+}
+
+.gmnoprint a,
+.gmnoprint span,
+.gm-style-cc {
+  display: none;
+}
+.gmnoprint div {
+  background: none !important;
+}
