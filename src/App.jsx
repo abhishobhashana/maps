@@ -6,7 +6,7 @@ import ErrorPage from "./pages/error-page";
 
 export default function App() {
   return (
-    <div className="bg-default-bg text-default-text">
+    <div className="bg-default font-sans">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />

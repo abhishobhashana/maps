@@ -2,7 +2,6 @@
 
 html {
   scroll-behavior: smooth;
-  color-scheme: dark;
 }
 
 body {
@@ -11,8 +10,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.app-logo:hover > svg > path {
-  fill: #ffffff;
+.poi-info-window div {
+  font-family: "SF Pro Text";
+  
+}
+.gm-style {
+  font: 400 11px SF Pro Text !important;
 }
 
 a[href^="http://maps.google.com/maps"]

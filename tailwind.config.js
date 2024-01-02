@@ -3,11 +3,17 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      "default-bg": "#000000",
-      "default-bg-scroll": "rgba(22, 22, 23, 0.8)",
-      "default-bg-menu": "rgba(22, 22, 23)",
-      "default-text": "rgba(255, 255, 255, 0.8)",
-      "default-text-hover": "#ffffff",
+      default: "rgba(0, 0, 0, 1)",
+      primary: "rgba(26, 26, 26, 1)",
+      secondary: "rgba(44, 44, 46, 1)",
+      white: "rgba(255, 255, 255, 1)",
+      grey: "rgba(60, 60, 67, 0.36)",
+      blue: "rgba(10, 132, 255, 1)",
+      seperator: "rgba(60, 60, 67, 0.36)",
+      "dark-white": "rgba(255, 255, 255, 1)",
+      "dark-grey": "rgba(235, 235, 245, 0.6)",
+      "dark-blue": "rgba(10, 132, 255, 1)",
+      "dark-seperator": "rgba(84, 84, 88, 0.65)",
     },
     fontFamily: {
       sans: ["SF Pro Text", "sans-serif"],
@@ -16,8 +22,8 @@ export default {
     },
     extend: {
       animation: {
-        'spin-slow': 'spin 2s linear infinite',
-      }
+        "spin-slow": "spin 2s linear infinite",
+      },
     },
     screens: {
       sm: "320px",
