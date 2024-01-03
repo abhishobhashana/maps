@@ -10,9 +10,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.map-btn:hover > span > svg > path {
+  fill: rgba(255, 255, 255, 1);
+}
+
 .poi-info-window div {
   font-family: "SF Pro Text";
-  
 }
 .gm-style {
   font: 400 11px SF Pro Text !important;

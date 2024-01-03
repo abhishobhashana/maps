@@ -16,6 +16,7 @@ import Check from "../../assets/images/Check";
 import AddMarker from "../../pages/layers/addMarker";
 import Marker from "../../pages/layers/marker";
 import { AppIcon } from "../../assets/images/AppIcon";
+import IconButton from "../iconButton";
 
 const libraries = ["places", "visualization"];
 
@@ -64,6 +65,8 @@ const Map = () => {
   const [style, setStyle] = useState(mapStyles[0]);
   const [mapType, setMapType] = useState("satellite");
   const [selected, setSelected] = useState(menuItems[0]);
+  const [disableZoomIn, setDisableZoomIn] = useState(false);
+  const [disableZoomOut, setDisableZoomOut] = useState(false);
   const [marker, setMarker] = useState([]);
 
   const markers = [
@@ -171,6 +174,19 @@ const Map = () => {
     }
   });
 
+  useEffect(() => {
+    if (zoom === 3) {
+      setDisableZoomOut(true);
+    } else {
+      setDisableZoomOut(false);
+    }
+    if (zoom === 22) {
+      setDisableZoomIn(true);
+    } else {
+      setDisableZoomIn(false);
+    }
+  });
+
   return (
     <>
       {!isLoaded ? (
@@ -205,13 +221,13 @@ const Map = () => {
           onZoomChanged={handleZoomChanged}
         >
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
-            <div className="hidden sm:flex md:hidden w-fit flex flex-col items-center gap-5 bg-secondary shadow-md backdrop-blur-sm rounded-xl p-3.5 m-4">
-              <button className="h-5" onClick={handleLocation}>
-                <Location />
-              </button>
-              <button onClick={handleZoomIn}>
-                <List />
-              </button>
+            <div className="hidden sm:flex md:hidden w-fit flex flex-col items-center bg-secondary shadow-md backdrop-blur-sm rounded-xl m-4">
+              <IconButton
+                className="border-b border-dark-seperator"
+                icon={<Location />}
+                onClick={handleLocation}
+              />
+              <IconButton icon={<List />} onClick={handleZoomIn} />
             </div>
           </MapContol>
 
@@ -219,8 +235,8 @@ const Map = () => {
             <div className="hidden sm:flex md:hidden w-fit bg-secondary shadow-md rounded-xl mx-4">
               <Listbox as="div" by="id" value={selected} onChange={setSelected}>
                 {({ open }) => (
-                  <div className="relative mt-1">
-                    <Listbox.Button className="relative w-fit cursor-ponter rounded-lg p-3.5 pt-3 shadow-md outline:none">
+                  <div className="relative">
+                    <Listbox.Button className="map-btn relative w-fit cursor-ponter rounded-lg p-3.5 shadow-md outline:none">
                       <Layer />
                     </Listbox.Button>
                     <Transition
@@ -268,7 +284,7 @@ const Map = () => {
 
           <MapContol position={google.maps.ControlPosition.TOP_CENTER}>
             <div className="hidden lg:flex md:flex w-screen bg-secondary shadow-md flex items-center justify-between px-6 py-3.5">
-              <h1 className="text-xl text-dark-white">{data.app}</h1>
+              <h1 className="text-xl text-dark-grey">{data.app}</h1>
               <div className="flex gap-8">
                 <button onClick={handleLocation}>
                   <Location />
@@ -378,13 +394,22 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.RIGHT_BOTTOM}>
-            <div className="hidden lg:flex md:flex w-fit flex items-center gap-5 bg-secondary shadow-md rounded-xl p-3 m-5">
-              <button onClick={handleZoomOut}>
-                <Minus />
-              </button>
-              <button onClick={handleZoomIn}>
-                <Plus />
-              </button>
+            <div className="hidden lg:flex md:flex w-fit flex items-center bg-secondary shadow-md rounded-2xl m-5">
+              <IconButton
+                small
+                zoomControl
+                disableVal={disableZoomOut}
+                icon={<Minus />}
+                onClick={handleZoomOut}
+              />
+
+              <IconButton
+                small
+                zoomControl
+                disableVal={disableZoomIn}
+                icon={<Plus />}
+                onClick={handleZoomIn}
+              />
             </div>
           </MapContol>
 
