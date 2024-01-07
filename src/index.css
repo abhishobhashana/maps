@@ -14,6 +14,10 @@ body {
   fill: rgba(255, 255, 255, 1);
 }
 
+.map-btn-dark:hover > span > svg > path {
+  fill: rgba(44, 44, 46, 1);
+}
+
 .poi-info-window div {
   font-family: "SF Pro Text";
 }

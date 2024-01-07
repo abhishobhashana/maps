@@ -6,6 +6,7 @@
   "addMarker": "Add marker",
   "traffic": "Traffic",
   "github": "Github",
-  "dark": "Dark",
-  "light": "Light"
+  "standard": "Standard",
+  "hybrid": "Hybrid",
+  "satellite": "Satellite"
 }

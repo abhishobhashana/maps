@@ -1,20 +1,11 @@
 import React from "react";
 
-const IconButton = ({
-  className,
-  small,
-  zoomControl,
-  disableVal,
-  icon,
-  onClick,
-}) => {
+const IconButton = ({ className, small, disableVal, icon, onClick }) => {
   return (
     <button
       className={`${className ? className : ""} ${
-        zoomControl ? "map-btn" : ""
-      } ${disableVal ? "pointer-events-none opacity-50" : ""} ${
-        small ? "p-2.5" : "p-3.5"
-      }`}
+        disableVal ? "pointer-events-none opacity-50" : ""
+      } ${small ? "p-2.5" : "p-3.5"}`}
       onClick={onClick}
     >
       <span
