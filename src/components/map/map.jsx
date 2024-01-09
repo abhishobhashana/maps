@@ -33,6 +33,7 @@ const Map = () => {
     libraries,
   });
 
+  const [map, setMap] = useState(null);
   const mode = UseModeChecker();
   const [center, setCenter] = useState({ lat: 23.0260736, lng: 72.58112 });
   const [zoom, setZoom] = useState(10);
@@ -83,6 +84,60 @@ const Map = () => {
   const [disableZoomIn, setDisableZoomIn] = useState(false);
   const [disableZoomOut, setDisableZoomOut] = useState(false);
   const [marker, setMarker] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+
+  // `https://api.maptiler.com/geocoding/${value}.json?autocomplete=false&fuzzyMatch=true&limit=3&key=LsBlTM26EDYF7qNveOnR`
+
+  const debounce = (func, delay) => {
+    let timer;
+    return function (...args) {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
+  };
+
+  const debounceSearch = debounce(async (value) => {
+    try {
+      const response = await fetch(
+        "https://jsonplaceholder.typicode.com/users",
+        {
+          method: "GET",
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        const places = data.filter((user) => {
+          return (
+            value &&
+            user &&
+            user.name &&
+            user.name.toLowerCase().includes(value.toLowerCase())
+          );
+        });
+        setSearchResult(places);
+      } else {
+        console.warn(response.statusText);
+      }
+    } catch (e) {
+      console.warn("error found", e);
+    }
+  }, 1000);
+
+  useEffect(() => {
+    debounceSearch(searchValue);
+    return () => clearTimeout(debounceSearch);
+  }, [searchValue]);
+
+  const onSearchChange = (value) => {
+    setSearchValue(value);
+    if (value.length >= 1) {
+      debounceSearch(value);
+    } else {
+      debounceSearch(null);
+    }
+  };
 
   const markers = [
     {
@@ -274,7 +329,7 @@ const Map = () => {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-75"
                     >
-                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 bg-light-white dark:bg-secondary text-base shadow-lg focus:outline-none">
+                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/95 text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
                             className="relative cursor-pointer select-none pl-12 pr-16 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
@@ -289,7 +344,7 @@ const Map = () => {
                                   </span>
                                 )}
 
-                                <span className="block truncate font-sans text-dark-white">
+                                <span className="block truncate font-sans text-secondary dark:text-white">
                                   {items.name}
                                 </span>
 
@@ -323,7 +378,6 @@ const Map = () => {
                     >
                       <Close />
                     </span>
-
                     <div className="grid w-80 relative items-center">
                       <span className="absolute ml-2 pointer-events-none">
                         <Search />
@@ -336,8 +390,33 @@ const Map = () => {
                         aria-label="Search Maps"
                         className="flex items-center bg-light-grey text-secondary/40 dark:text-dark-grey text-base p-2.5 pl-9 rounded-xl focus:outline-none"
                         spellCheck="false"
+                        value={searchValue}
+                        onChange={(e) => onSearchChange(e.target.value)}
                       />
                     </div>
+                    {searchResult.slice(0, 8).map((place, index) => {
+                      return (
+                        <div key={index} className="min-h-screen py-4">
+                          <span
+                            key={index}
+                            className="bg-light-grey text-secondary/40 dark:text-dark-grey text-base cursor-pointer p-4 rounded-lg"
+                            onClick={() => onSearchChange(place.name)}
+                          >
+                            {place.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+
+                    {!searchResult
+                      .map((e) => e.name)
+                      .toString()
+                      .toLocaleLowerCase()
+                      .includes(searchValue) && searchValue.length >= 1 ? (
+                      <span className="min-h-screen flex items-center justify-center text-secondary/40 dark:text-dark-grey text-base pb-40 rounded-lg">
+                        {data.noResult}
+                      </span>
+                    ) : null}
                   </div>
                 )}
                 <span
@@ -409,12 +488,15 @@ const Map = () => {
                   )}
                 </Listbox>
 
-                <button onClick={handleLocation}>
-                  <Routes />
+                <button
+                  className="text-base text-secondary dark:text-dark-grey"
+                  onClick={handleZoomIn}
+                >
+                  3D
                 </button>
 
-                <button onClick={handleZoomIn}>
-                  <List />
+                <button onClick={handleZoomOut}>
+                  <Routes />
                 </button>
 
                 <Listbox

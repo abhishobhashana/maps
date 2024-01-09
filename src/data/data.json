@@ -1,6 +1,5 @@
 {
   "app": "Maps",
-  "contact": "Contact",
   "layers": "Layers",
   "marker": "Marker",
   "addMarker": "Add marker",
@@ -8,5 +7,6 @@
   "github": "Github",
   "standard": "Standard",
   "hybrid": "Hybrid",
-  "satellite": "Satellite"
+  "satellite": "Satellite",
+  "noResult": "No suggestions found."
 }
