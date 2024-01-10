@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import data from "../data/data.json";
+import favicon from "../../public/favicon.svg";
 
 export default function ErrorPage() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = data.notFound;
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-5">
-      <h1 className="text-2xl text-secondary dark:text-dark-grey">Oops!</h1>
-      <span className="text-secondary dark:text-dark-grey">
-        Sorry, an unexpected error has occurred.
-      </span>
-    </div>
+    <>
+      <button
+        className="absolute top-0 left-0 m-5"
+        onClick={() => {
+          navigate("/");
+          document.title = data.app;
+        }}
+      >
+        <img src={favicon} />
+      </button>
+      <div className="min-h-screen flex items-center justify-center text-center text-secondary dark:text-dark-grey px-10">
+        <h1 className="lg:text-5xl md:text-3xl sm:text-2xl">
+          {data.notFoundMessage}
+        </h1>
+      </div>
+    </>
   );
 }

@@ -24,6 +24,8 @@ import IconButton from "../iconButton";
 import { Search } from "../../assets/images/Search";
 import { UseModeChecker } from "../../useModeChecker";
 import { Routes } from "../../assets/images/Route";
+import favicon from "../../../public/favicon.svg";
+import { Logo } from "../../assets/images/Logo";
 
 const libraries = ["places", "visualization"];
 
@@ -79,7 +81,7 @@ const Map = () => {
     },
   ];
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
-
+  const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
   const [selected, setSelected] = useState(menuItems[0]);
   const [disableZoomIn, setDisableZoomIn] = useState(false);
   const [disableZoomOut, setDisableZoomOut] = useState(false);
@@ -305,12 +307,47 @@ const Map = () => {
             <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-light-white dark:bg-secondary shadow-md rounded-xl m-4">
               <IconButton
                 className="border-b border-seperator dark:border-dark-seperator"
-                icon={<Location />}
-                onClick={handleLocation}
+                icon={<Logo />}
+                onClick={() => setOpenSearchDrawer(!openSearchDrawer)}
               />
-              <IconButton icon={<List />} onClick={handleZoomIn} />
+              <IconButton icon={<Location />} onClick={handleLocation} />
             </div>
           </MapContol>
+
+          {openSearchDrawer ? (
+            <div className="hidden sm:flex lg:hidden md:hidden absolute bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl border border-seperator dark:border-dark-seperator">
+              <div className="flex items-center justify-between px-5 pt-5">
+                <h1 className="text-2xl text-secondary dark:text-white">
+                  Choose map
+                </h1>
+                <span
+                  className="text-2xl text-secondary dark:text-white"
+                  onClick={() => setOpenSearchDrawer(!openSearchDrawer)}
+                >
+                  <Close />
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-5 p-5">
+                {mapTypes.map((items) => (
+                  <div
+                    className="relative cursor-pointer select-none w-full"
+                    key={items.id}
+                    value={items.id}
+                  >
+                    <>
+                      <img
+                        className="relative box-border h-28 w-full rounded-xl object-cover"
+                        src={items.img}
+                      />
+                      <span className="absolute bottom-0 p-3 w-full rounded-b-lg truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                        {items.name}
+                      </span>
+                    </>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
             <div className="hidden sm:flex lg:hidden md:hidden w-fit bg-light-white dark:bg-secondary rounded-xl mx-4">
@@ -488,12 +525,12 @@ const Map = () => {
                   )}
                 </Listbox>
 
-                <button
-                  className="text-base text-secondary dark:text-dark-grey"
+                <span
+                  className="cursor-pointer text-base text-secondary dark:text-dark-grey"
                   onClick={handleZoomIn}
                 >
                   3D
-                </button>
+                </span>
 
                 <button onClick={handleZoomOut}>
                   <Routes />
@@ -597,10 +634,9 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.LEFT_BOTTOM}>
-            <div className="hidden lg:flex md:flex w-fit gap-1.5 items-center m-5">
-              <AppIcon
-                fill={mode ? "rgba(255, 255, 255, 1)" : "rgba(44, 44, 46, 1)"}
-              />
+            <div className="flex md:flex w-fit gap-1.5 items-center m-5">
+              <Logo height={20} width={20} />
+
               <h1 className="text-xl text-secondary dark:text-white">
                 {data.app}
               </h1>
