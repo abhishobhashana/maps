@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { GoogleMap, useLoadScript, TrafficLayer } from "@react-google-maps/api";
 import { styles } from "./consts/style";
-import { Listbox, Transition } from "@headlessui/react";
+import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { Loader } from "../../assets/images/Loader";
 import MapContol from "./mapContol";
 import { Plus } from "../../assets/images/Plus";
@@ -81,7 +81,7 @@ const Map = () => {
     },
   ];
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
-  const [openSearchDrawer, setOpenSearchDrawer] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState(menuItems[0]);
   const [disableZoomIn, setDisableZoomIn] = useState(false);
   const [disableZoomOut, setDisableZoomOut] = useState(false);
@@ -238,6 +238,14 @@ const Map = () => {
     setZoom(currentZoom);
   }
 
+  const closeModal = () => {
+    setIsOpen(false);
+  };
+
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
   useEffect(() => {
     switch (mapTypeLayer.id) {
       case 0:
@@ -308,46 +316,70 @@ const Map = () => {
               <IconButton
                 className="border-b border-seperator dark:border-dark-seperator"
                 icon={<Logo />}
-                onClick={() => setOpenSearchDrawer(!openSearchDrawer)}
+                onClick={openModal}
               />
               <IconButton icon={<Location />} onClick={handleLocation} />
             </div>
           </MapContol>
 
-          {openSearchDrawer ? (
-            <div className="hidden sm:flex lg:hidden md:hidden absolute bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl border border-seperator dark:border-dark-seperator">
-              <div className="flex items-center justify-between px-5 pt-5">
-                <h1 className="text-2xl text-secondary dark:text-white">
-                  Choose map
-                </h1>
-                <span
-                  className="text-2xl text-secondary dark:text-white"
-                  onClick={() => setOpenSearchDrawer(!openSearchDrawer)}
-                >
-                  <Close />
-                </span>
-              </div>
-              <div className="grid grid-cols-2 gap-5 p-5">
-                {mapTypes.map((items) => (
-                  <div
-                    className="relative cursor-pointer select-none w-full"
-                    key={items.id}
-                    value={items.id}
-                  >
-                    <>
-                      <img
-                        className="relative box-border h-28 w-full rounded-xl object-cover"
-                        src={items.img}
-                      />
-                      <span className="absolute bottom-0 p-3 w-full rounded-b-lg truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
-                        {items.name}
+          <Transition appear show={isOpen} as={Fragment}>
+            <Dialog as="div" className="hidden sm:flex relative z-10" onClose={closeModal}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-100"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 backdrop-blur-sm" />
+              </Transition.Child>
+
+              <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl">
+                <div className="flex min-h-full items-center justify-center text-center">
+                  <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-light-white dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
+                    <div className="flex items-center justify-between">
+                      <h1 className="text-2xl text-secondary dark:text-white">
+                        Choose Map
+                      </h1>
+                      <span
+                        className="text-2xl text-secondary dark:text-white"
+                        onClick={closeModal}
+                      >
+                        <Close />
                       </span>
-                    </>
-                  </div>
-                ))}
+                    </div>
+
+                    <RadioGroup value={mapTypeLayer} onChange={setMapTypeLayer}>
+                      <div className="grid grid-cols-2 gap-5 pt-5">
+                        {mapTypes.map((items) => (
+                          <RadioGroup.Option
+                            key={items.id}
+                            value={items}
+                            className={({ active }) =>
+                              `${active ? "border-2 border-dark-blue" : ""}
+                  relative cursor-pointer select-none rounded-xl w-full border-box object-cover`
+                            }
+                          >
+                            <div className="flex w-full items-center justify-between">
+                              <img
+                                className="relative h-28 w-full rounded-xl"
+                                src={items.img}
+                              />
+                              <span className="absolute bottom-0 p-3 w-full rounded-b-xl truncate text-lg bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                {items.name}
+                              </span>
+                            </div>
+                          </RadioGroup.Option>
+                        ))}
+                      </div>
+                    </RadioGroup>
+                  </Dialog.Panel>
+                </div>
               </div>
-            </div>
-          ) : null}
+            </Dialog>
+          </Transition>
 
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
             <div className="hidden sm:flex lg:hidden md:hidden w-fit bg-light-white dark:bg-secondary rounded-xl mx-4">
@@ -369,7 +401,7 @@ const Map = () => {
                       <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/95 text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
-                            className="relative cursor-pointer select-none pl-12 pr-16 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                            className="relative cursor-pointer select-none pl-11 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                             key={items.id}
                             value={items}
                           >
@@ -381,7 +413,7 @@ const Map = () => {
                                   </span>
                                 )}
 
-                                <span className="block truncate font-sans text-secondary dark:text-white">
+                                <span className="block truncate font-sans text-lg text-secondary dark:text-white">
                                   {items.name}
                                 </span>
 
