@@ -24,7 +24,6 @@ import IconButton from "../iconButton";
 import { Search } from "../../assets/images/Search";
 import { UseModeChecker } from "../../useModeChecker";
 import { Routes } from "../../assets/images/Route";
-import favicon from "../../../public/favicon.svg";
 import { Logo } from "../../assets/images/Logo";
 
 const libraries = ["places", "visualization"];
@@ -51,11 +50,6 @@ const Map = () => {
       name: data.marker,
       icon: <Pin />,
     },
-    {
-      id: 2,
-      name: data.traffic,
-      icon: <Column />,
-    },
   ];
 
   const [openSideMenu, setOpenSideMenu] = useState(false);
@@ -64,24 +58,30 @@ const Map = () => {
   const mapTypes = [
     {
       id: 0,
-      name: data.standard,
+      name: data.explore,
       img: mode
         ? "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-standard-dark.png"
         : "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-standard.png",
     },
     {
       id: 1,
-      name: data.hybrid,
+      name: data.driving,
       img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-hybrid.png",
     },
     {
       id: 2,
+      name: data.transit,
+      img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-satellite.png",
+    },
+    {
+      id: 3,
       name: data.satellite,
       img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-satellite.png",
     },
   ];
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showTraffic, setShowTraffic] = useState(false);
   const [selected, setSelected] = useState(menuItems[0]);
   const [disableZoomIn, setDisableZoomIn] = useState(false);
   const [disableZoomOut, setDisableZoomOut] = useState(false);
@@ -210,16 +210,6 @@ const Map = () => {
       case 1:
         return <Marker markers={markers} />;
 
-      case 2:
-        return (
-          <TrafficLayer
-            options={{
-              autoRefresh: true,
-            }}
-            autoUpdate
-          />
-        );
-
       default:
         break;
     }
@@ -250,14 +240,22 @@ const Map = () => {
     switch (mapTypeLayer.id) {
       case 0:
         setMapType("roadmap");
+        setShowTraffic(false);
         break;
 
       case 1:
-        setMapType("hybrid");
+        setMapType("roadmap");
+        setShowTraffic(true);
         break;
 
       case 2:
+        setMapType("roadmap");
+        setShowTraffic(false);
+        break;
+
+      case 3:
         setMapType("satellite");
+        setShowTraffic(false);
         break;
 
       default:
@@ -284,6 +282,9 @@ const Map = () => {
         <Loader />
       ) : (
         <GoogleMap
+          onLoad={(map) => {
+            setMap(map);
+          }}
           mapContainerClassName="map"
           mapContainerStyle={containerStyle}
           options={{
@@ -314,7 +315,7 @@ const Map = () => {
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
             <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-light-white dark:bg-secondary shadow-md rounded-xl m-4">
               <IconButton
-                className="border-b border-seperator dark:border-dark-seperator"
+                className="border-b border-seperator dark:border-dark-seperator focus-visible:outline-none"
                 icon={<Logo />}
                 onClick={openModal}
               />
@@ -323,7 +324,11 @@ const Map = () => {
           </MapContol>
 
           <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="hidden sm:flex relative z-10" onClose={closeModal}>
+            <Dialog
+              as="div"
+              className="hidden sm:flex relative z-10"
+              onClose={closeModal}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-100"
@@ -336,48 +341,62 @@ const Map = () => {
                 <div className="fixed inset-0 backdrop-blur-sm" />
               </Transition.Child>
 
-              <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl">
-                <div className="flex min-h-full items-center justify-center text-center">
-                  <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-light-white dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
-                    <div className="flex items-center justify-between">
-                      <h1 className="text-2xl text-secondary dark:text-white">
-                        Choose Map
-                      </h1>
-                      <span
-                        className="text-2xl text-secondary dark:text-white"
-                        onClick={closeModal}
-                      >
-                        <Close />
-                      </span>
-                    </div>
-
-                    <RadioGroup value={mapTypeLayer} onChange={setMapTypeLayer}>
-                      <div className="grid grid-cols-2 gap-5 pt-5">
-                        {mapTypes.map((items) => (
-                          <RadioGroup.Option
-                            key={items.id}
-                            value={items}
-                            className={({ active }) =>
-                              `${active ? "border-2 border-dark-blue" : ""}
-                  relative cursor-pointer select-none rounded-xl w-full border-box object-cover`
-                            }
-                          >
-                            <div className="flex w-full items-center justify-between">
-                              <img
-                                className="relative h-28 w-full rounded-xl"
-                                src={items.img}
-                              />
-                              <span className="absolute bottom-0 p-3 w-full rounded-b-xl truncate text-lg bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
-                                {items.name}
-                              </span>
-                            </div>
-                          </RadioGroup.Option>
-                        ))}
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-200"
+                enterFrom="translate-y-full opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transform transition ease-in-out duration-100"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-full opacity-0"
+              >
+                <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl">
+                  <div className="flex min-h-full items-center justify-center text-center">
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-t-2xl bg-light-white dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
+                      <div className="flex items-center justify-between">
+                        <h1 className="text-2xl text-secondary dark:text-white">
+                          Choose Map
+                        </h1>
+                        <span
+                          className="text-2xl text-secondary dark:text-white"
+                          onClick={closeModal}
+                        >
+                          <Close />
+                        </span>
                       </div>
-                    </RadioGroup>
-                  </Dialog.Panel>
+
+                      <RadioGroup
+                        by="id"
+                        value={mapTypeLayer}
+                        onChange={setMapTypeLayer}
+                      >
+                        <div className="grid grid-cols-2 gap-5 pt-5">
+                          {mapTypes.map((items) => (
+                            <RadioGroup.Option
+                              key={items.id}
+                              value={items}
+                              className={({ active }) =>
+                                `${active ? "border-2 border-dark-blue" : ""}
+                  relative cursor-pointer select-none rounded-xl w-full border-box object-cover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                              }
+                            >
+                              <div className="flex w-full items-center justify-between">
+                                <img
+                                  className="relative h-28 w-full rounded-xl"
+                                  src={items.img}
+                                />
+                                <span className="absolute bottom-0 p-3 w-full rounded-b-xl truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                  {items.name}
+                                </span>
+                              </div>
+                            </RadioGroup.Option>
+                          ))}
+                        </div>
+                      </RadioGroup>
+                    </Dialog.Panel>
+                  </div>
                 </div>
-              </div>
+              </Transition.Child>
             </Dialog>
           </Transition>
 
@@ -386,7 +405,7 @@ const Map = () => {
               <Listbox as="div" by="id" value={selected} onChange={setSelected}>
                 {({ open }) => (
                   <div className="relative">
-                    <Listbox.Button className="map-btn relative w-fit rounded-xl cursor-ponter p-3 shadow-md">
+                    <Listbox.Button className="map-btn relative w-fit rounded-xl cursor-ponter p-3 shadow-md focus-visible:outline-none">
                       <Layer />
                     </Listbox.Button>
                     <Transition
@@ -413,7 +432,7 @@ const Map = () => {
                                   </span>
                                 )}
 
-                                <span className="block truncate font-sans text-lg text-secondary dark:text-white">
+                                <span className="block truncate font-sans text-base text-secondary dark:text-white">
                                   {items.name}
                                 </span>
 
@@ -525,30 +544,28 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute flex items-center mt-6 px-0 py-7 right-0 max-h-60 overflow-auto flex rounded-xl backdrop-blur-sm bg-white/80 dark:bg-secondary/90 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
+                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-0  overflow-auto rounded-xl backdrop-blur-sm bg-white/80 dark:bg-secondary/90 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
                           {mapTypes.map((items) => (
                             <Listbox.Option
-                              className="relative cursor-pointer select-none pl-7 last:pr-7"
+                              className={({ selected }) =>
+                                `${
+                                  selected ? "border-2 border-dark-blue" : ""
+                                } relative cursor-pointer select-none rounded-xl w-full border-box object-cover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                              }
                               key={items.id}
                               value={items}
                             >
-                              {({ selected }) => (
-                                <>
-                                  <div className="flex flex-col items-center gap-2.5">
-                                    <img
-                                      className={`${
-                                        selected
-                                          ? "border-2 border-dark-blue"
-                                          : ""
-                                      } box-border h-[60px] w-20 rounded-lg object-cover`}
-                                      src={items.img}
-                                    />
-                                    <span className="block truncate font-sans text-secondary dark:text-white leading-none">
-                                      {items.name}
-                                    </span>
-                                  </div>
-                                </>
-                              )}
+                              <>
+                                <div className="flex w-full items-center justify-between">
+                                  <img
+                                    className="relative h-24 w-full rounded-xl"
+                                    src={items.img}
+                                  />
+                                  <span className="absolute bottom-0 p-2 w-full rounded-b-xl truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                    {items.name}
+                                  </span>
+                                </div>
+                              </>
                             </Listbox.Option>
                           ))}
                         </Listbox.Options>
@@ -676,6 +693,15 @@ const Map = () => {
           </MapContol>
 
           {getLayers()}
+
+          {showTraffic ? (
+            <TrafficLayer
+              options={{
+                autoRefresh: true,
+              }}
+              autoUpdate
+            />
+          ) : null}
         </GoogleMap>
       )}
     </>
