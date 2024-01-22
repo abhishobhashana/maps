@@ -25,6 +25,10 @@ import { Search } from "../../assets/images/Search";
 import { UseModeChecker } from "../../useModeChecker";
 import { Routes } from "../../assets/images/Route";
 import { Logo } from "../../assets/images/Logo";
+import Explore from "../../assets/images/Explore.png";
+import Driving from "../../assets/images/Driving.png";
+import Transit from "../../assets/images/Transit.png";
+import Satellite from "../../assets/images/Satellite.png";
 
 const libraries = ["places", "visualization"];
 
@@ -34,7 +38,6 @@ const Map = () => {
     libraries,
   });
 
-  const [map, setMap] = useState(null);
   const mode = UseModeChecker();
   const [center, setCenter] = useState({ lat: 23.0260736, lng: 72.58112 });
   const [zoom, setZoom] = useState(10);
@@ -61,24 +64,25 @@ const Map = () => {
       name: data.explore,
       img: mode
         ? "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-standard-dark.png"
-        : "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-standard.png",
+        : Explore,
     },
     {
       id: 1,
       name: data.driving,
-      img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-hybrid.png",
+      img: Driving,
     },
     {
       id: 2,
       name: data.transit,
-      img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-satellite.png",
+      img: Transit,
     },
     {
       id: 3,
       name: data.satellite,
-      img: "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-satellite.png",
+      img: Satellite,
     },
   ];
+
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [showTraffic, setShowTraffic] = useState(false);
@@ -282,9 +286,6 @@ const Map = () => {
         <Loader />
       ) : (
         <GoogleMap
-          onLoad={(map) => {
-            setMap(map);
-          }}
           mapContainerClassName="map"
           mapContainerStyle={containerStyle}
           options={{
@@ -377,15 +378,15 @@ const Map = () => {
                               value={items}
                               className={({ active }) =>
                                 `${active ? "border-2 border-dark-blue" : ""}
-                  relative cursor-pointer select-none rounded-xl w-full border-box object-cover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                  relative cursor-pointer select-none rounded-xl w-full box-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
                               }
                             >
-                              <div className="flex w-full items-center justify-between">
+                              <div className="flex flex-col w-full items-center justify-between">
                                 <img
-                                  className="relative h-28 w-full rounded-xl"
+                                  className="relative h-[4.5rem] w-full rounded-t-xl"
                                   src={items.img}
                                 />
-                                <span className="absolute bottom-0 p-3 w-full rounded-b-xl truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
                                   {items.name}
                                 </span>
                               </div>
@@ -544,7 +545,7 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-0  overflow-auto rounded-xl backdrop-blur-sm bg-white/80 dark:bg-secondary/90 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
+                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary/90 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
                           {mapTypes.map((items) => (
                             <Listbox.Option
                               className={({ selected }) =>
@@ -555,17 +556,15 @@ const Map = () => {
                               key={items.id}
                               value={items}
                             >
-                              <>
-                                <div className="flex w-full items-center justify-between">
-                                  <img
-                                    className="relative h-24 w-full rounded-xl"
-                                    src={items.img}
-                                  />
-                                  <span className="absolute bottom-0 p-2 w-full rounded-b-xl truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
-                                    {items.name}
-                                  </span>
-                                </div>
-                              </>
+                              <div className="flex flex-col w-full items-center justify-between">
+                                <img
+                                  className="relative h-20 w-full rounded-t-xl"
+                                  src={items.img}
+                                />
+                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-white/50 dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                  {items.name}
+                                </span>
+                              </div>
                             </Listbox.Option>
                           ))}
                         </Listbox.Options>

@@ -7,7 +7,7 @@ export default {
       primary: "rgba(26, 26, 26, 1)",
       secondary: "rgba(44, 44, 46, 1)",
       white: "rgba(255, 255, 255, 1)",
-      "light-white": "rgb(238,238,238)",
+      "light-white": "rgb(238, 238, 238)",
       border: "rgba(17, 17, 17, 0.25)",
       grey: "rgba(60, 60, 67, 0.36)",
       "light-grey": "rgba(118, 118, 128, 0.12)",
