@@ -9,11 +9,11 @@ import { Minus } from "../../assets/images/Minus";
 import { PlusDark } from "../../assets/images/Plus-dark";
 import { MinusDark } from "../../assets/images/Minus-dark";
 import { Location } from "../../assets/images/Location";
-import { List } from "../../assets/images/List";
+// import { List } from "../../assets/images/List";
 import { Layer } from "../../assets/images/Layer";
 import data from "../../data/data.json";
 import Pin from "../../assets/images/Pin";
-import Column from "../../assets/images/Column";
+// import Column from "../../assets/images/Column";
 import Check from "../../assets/images/Check";
 import AddMarker from "../../pages/layers/addMarker";
 import Marker from "../../pages/layers/marker";
@@ -23,12 +23,16 @@ import { Close } from "../../assets/images/Close";
 import IconButton from "../iconButton";
 import { Search } from "../../assets/images/Search";
 import { UseModeChecker } from "../../useModeChecker";
-import { Routes } from "../../assets/images/Route";
+// import { Routes } from "../../assets/images/Route";
 import { Logo } from "../../assets/images/Logo";
 import Explore from "../../assets/images/Explore.png";
+import ExploreDark from "../../assets/images/Explore-dark.jpeg";
 import Driving from "../../assets/images/Driving.png";
+import DrivingDark from "../../assets/images/Driving-dark.jpeg";
 import Transit from "../../assets/images/Transit.png";
+import TransitDark from "../../assets/images/Transit-dark.jpeg";
 import Satellite from "../../assets/images/Satellite.png";
+import { CloseCircle } from "../../assets/images/CloseCircle";
 
 const libraries = ["places", "visualization"];
 
@@ -62,19 +66,17 @@ const Map = () => {
     {
       id: 0,
       name: data.explore,
-      img: mode
-        ? "https://cdn.apple-mapkit.com/mk/5.76.120/images/icons/map-type-standard-dark.png"
-        : Explore,
+      img: mode ? ExploreDark : Explore,
     },
     {
       id: 1,
       name: data.driving,
-      img: Driving,
+      img: mode ? DrivingDark : Driving,
     },
     {
       id: 2,
       name: data.transit,
-      img: Transit,
+      img: mode ? TransitDark : Transit,
     },
     {
       id: 3,
@@ -314,7 +316,7 @@ const Map = () => {
           onZoomChanged={handleZoomChanged}
         >
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
-            <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-light-white dark:bg-secondary shadow-md rounded-xl m-4">
+            <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-white dark:bg-secondary shadow-md rounded-xl m-4">
               <IconButton
                 className="border-b border-seperator dark:border-dark-seperator focus-visible:outline-none"
                 icon={<Logo />}
@@ -353,7 +355,7 @@ const Map = () => {
               >
                 <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl">
                   <div className="flex min-h-full items-center justify-center text-center">
-                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-t-2xl bg-light-white dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-t-2xl bg-white/60 dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
                       <div className="flex items-center justify-between">
                         <h1 className="text-2xl text-secondary dark:text-white">
                           Choose Map
@@ -362,7 +364,7 @@ const Map = () => {
                           className="text-2xl text-secondary dark:text-white"
                           onClick={closeModal}
                         >
-                          <Close />
+                          <CloseCircle />
                         </span>
                       </div>
 
@@ -386,7 +388,7 @@ const Map = () => {
                                   className="relative h-[4.5rem] w-full rounded-t-xl"
                                   src={items.img}
                                 />
-                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-white dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-secondary dark:text-white leading-none">
                                   {items.name}
                                 </span>
                               </div>
@@ -402,7 +404,7 @@ const Map = () => {
           </Transition>
 
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
-            <div className="hidden sm:flex lg:hidden md:hidden w-fit bg-light-white dark:bg-secondary rounded-xl mx-4">
+            <div className="hidden sm:flex lg:hidden md:hidden w-fit bg-white dark:bg-secondary rounded-xl mx-4">
               <Listbox as="div" by="id" value={selected} onChange={setSelected}>
                 {({ open }) => (
                   <div className="relative">
@@ -418,7 +420,7 @@ const Map = () => {
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-75"
                     >
-                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/95 text-base shadow-lg focus:outline-none">
+                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/90 dark:bg-secondary/95 text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
                             className="relative cursor-pointer select-none pl-11 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
@@ -477,7 +479,7 @@ const Map = () => {
                         placeholder="Search Maps"
                         autoComplete="off"
                         aria-label="Search Maps"
-                        className="flex items-center bg-light-grey text-secondary/40 dark:text-dark-grey text-base p-2.5 pl-9 rounded-xl focus:outline-none"
+                        className="flex items-center bg-light-grey text-secondary/70 dark:text-dark-grey text-base p-2.5 pl-9 rounded-xl focus:outline-none"
                         spellCheck="false"
                         value={searchValue}
                         onChange={(e) => onSearchChange(e.target.value)}
@@ -502,7 +504,7 @@ const Map = () => {
                       .toString()
                       .toLocaleLowerCase()
                       .includes(searchValue) && searchValue.length >= 1 ? (
-                      <span className="min-h-screen flex items-center justify-center text-secondary/40 dark:text-dark-grey text-base pb-40 rounded-lg">
+                      <span className="min-h-screen flex items-center justify-center text-secondary/70 dark:text-dark-grey text-base pb-40 rounded-lg">
                         {data.noResult}
                       </span>
                     ) : null}
@@ -545,7 +547,7 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary/90 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
+                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary/95 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
                           {mapTypes.map((items) => (
                             <Listbox.Option
                               className={({ selected }) =>
@@ -573,7 +575,7 @@ const Map = () => {
                   )}
                 </Listbox>
 
-                <span
+                {/* <span
                   className="cursor-pointer text-base text-secondary dark:text-dark-grey"
                   onClick={handleZoomIn}
                 >
@@ -582,7 +584,7 @@ const Map = () => {
 
                 <button onClick={handleZoomOut}>
                   <Routes />
-                </button>
+                </button> */}
 
                 <Listbox
                   as="div"
@@ -604,7 +606,7 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/90 text-base shadow-2xl focus:outline-none">
+                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/95 text-base shadow-2xl focus:outline-none">
                           {menuItems.map((items) => (
                             <Listbox.Option
                               className="relative cursor-pointer select-none pl-10 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
