@@ -25,6 +25,9 @@ export const styles = {
         {
           visibility: "off",
         },
+        {
+          "color": "#0c817b"
+        }
       ],
     },
     {
@@ -41,10 +44,13 @@ export const styles = {
       elementType: "geometry.fill",
       stylers: [
         {
-          saturation: 75,
+          saturation: 0,
         },
         {
-          lightness: -5,
+          lightness: 0,
+        },
+        {
+          hue: "#bddd9e",
         },
       ],
     },
@@ -494,10 +500,7 @@ export const styles = {
       elementType: "all",
       stylers: [
         {
-          saturation: "100",
-        },
-        {
-          color: "#0E3768",
+          color: "#203882",
         },
       ],
     },
