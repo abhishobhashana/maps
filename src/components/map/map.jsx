@@ -43,8 +43,8 @@ const Map = () => {
   });
 
   const mode = UseModeChecker();
-  const [center, setCenter] = useState({ lat: 23.0260736, lng: 72.58112 });
-  const [zoom, setZoom] = useState(10);
+  const [center, setCenter] = useState({ lat: 21.5222, lng: 70.4579 });
+  const [zoom, setZoom] = useState("");
 
   const menuItems = [
     {
@@ -225,7 +225,7 @@ const Map = () => {
     if (selected.id !== 0) {
       setZoom(6);
     } else {
-      setZoom(8);
+      setZoom(13);
     }
   }, [selected]);
 

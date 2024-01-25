@@ -42,3 +42,7 @@ a[href^="https://maps.google.com/maps"]
 .gmnoprint div {
   background: none !important;
 }
+
+.gm-style iframe + div {
+  border: none !important;
+}
