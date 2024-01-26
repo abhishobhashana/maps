@@ -1,5 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { GoogleMap, useLoadScript, TrafficLayer } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  useLoadScript,
+  TrafficLayer,
+  Marker,
+  OverlayView,
+} from "@react-google-maps/api";
 import { styles } from "./consts/style";
 import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import { Loader } from "../../assets/images/Loader";
@@ -16,7 +22,7 @@ import Pin from "../../assets/images/Pin";
 // import Column from "../../assets/images/Column";
 import Check from "../../assets/images/Check";
 import AddMarker from "../../pages/layers/addMarker";
-import Marker from "../../pages/layers/marker";
+import MarkerComponent from "../../pages/layers/marker";
 import { AppIcon } from "../../assets/images/AppIcon";
 import { Sidemenu } from "../../assets/images/Sidemenu";
 import { Close } from "../../assets/images/Close";
@@ -59,6 +65,7 @@ const Map = () => {
     },
   ];
 
+  const [position, setPosition] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
   const [mapType, setMapType] = useState("satellite");
 
@@ -88,14 +95,12 @@ const Map = () => {
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [isOpen, setIsOpen] = useState(false);
   const [showTraffic, setShowTraffic] = useState(false);
-  const [selected, setSelected] = useState(menuItems[0]);
+  const [selected, setSelected] = useState("");
   const [disableZoomIn, setDisableZoomIn] = useState(false);
   const [disableZoomOut, setDisableZoomOut] = useState(false);
   const [marker, setMarker] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
-
-  // `https://api.maptiler.com/geocoding/${value}.json?autocomplete=false&fuzzyMatch=true&limit=3&key=LsBlTM26EDYF7qNveOnR`
 
   const debounce = (func, delay) => {
     let timer;
@@ -186,6 +191,8 @@ const Map = () => {
         lng: position.coords.longitude,
       };
       setCenter(pos);
+      setPosition(true);
+      setZoom(18);
     });
   };
 
@@ -214,15 +221,26 @@ const Map = () => {
         return <AddMarker marker={marker} />;
 
       case 1:
-        return <Marker markers={markers} />;
+        return <MarkerComponent markers={markers} />;
 
       default:
         break;
     }
   };
 
+  const getPosition = () => {
+    if (position) {
+      return (
+        <OverlayView mapPaneName={OverlayView.OVERLAY_LAYER} position={center}>
+          <span className="inline-flex rounded-full h-6 w-6 bg-dark-blue rounded-full border-4 border-white"></span>
+        </OverlayView>
+      );
+    }
+    return;
+  };
+
   useEffect(() => {
-    if (selected.id !== 0) {
+    if (selected.id === 1) {
       setZoom(6);
     } else {
       setZoom(13);
@@ -694,6 +712,8 @@ const Map = () => {
           </MapContol>
 
           {getLayers()}
+
+          {getPosition()}
 
           {showTraffic ? (
             <TrafficLayer
