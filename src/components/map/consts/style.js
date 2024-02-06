@@ -26,8 +26,8 @@ export const styles = {
           visibility: "off",
         },
         {
-          "color": "#0c817b"
-        }
+          color: "#0c817b",
+        },
       ],
     },
     {
@@ -249,7 +249,7 @@ export const styles = {
       elementType: "all",
       stylers: [
         {
-          color: "#3b444f",
+          color: "#36475b",
         },
       ],
     },
@@ -276,7 +276,7 @@ export const styles = {
       elementType: "labels.text.stroke",
       stylers: [
         {
-          color: "#1c1c1e",
+          color: "#576369",
         },
       ],
     },
@@ -294,7 +294,7 @@ export const styles = {
       elementType: "labels.text.stroke",
       stylers: [
         {
-          color: "#1c1c1e",
+          color: "#576369",
         },
       ],
     },
@@ -306,7 +306,7 @@ export const styles = {
           visibility: "simplified",
         },
         {
-          color: "#ebebf0",
+          color: "#d9e3ed",
         },
       ],
     },
@@ -315,7 +315,7 @@ export const styles = {
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#aeaeb2",
+          color: "#cad9ec",
         },
       ],
     },
@@ -324,7 +324,7 @@ export const styles = {
       elementType: "labels.text.stroke",
       stylers: [
         {
-          color: "#1c1c1e",
+          color: "#485569",
         },
       ],
     },
@@ -333,7 +333,7 @@ export const styles = {
       elementType: "geometry",
       stylers: [
         {
-          color: "#3b444f",
+          color: "#36475b",
         },
       ],
     },
@@ -341,7 +341,7 @@ export const styles = {
       featureType: "poi.business",
       stylers: [
         {
-          visibility: "off",
+          visibility: "on",
         },
       ],
     },
@@ -364,50 +364,32 @@ export const styles = {
       ],
     },
     {
-      featureType: "road",
-      elementType: "labels",
-      stylers: [
-        {
-          visibility: "on",
-        },
-      ],
-    },
-    {
-      featureType: "road",
-      elementType: "all",
-      stylers: [
-        {
-          weight: "1.00",
-        },
-        {
-          gamma: "1.8",
-        },
-        {
-          saturation: "0",
-        },
-      ],
-    },
-    {
       featureType: "road.arterial",
-      elementType: "all",
+      elementType: "geometry",
       stylers: [
         {
-          color: "#8e8e93",
+          color: "#556377",
         },
       ],
     },
     {
       featureType: "road.highway",
-      elementType: "geometry",
+      elementType: "geometry.fill",
       stylers: [
         {
-          visibility: "simplified",
+          weight: 1,
         },
         {
-          weight: 1.5,
+          color: "#879bc0",
         },
+      ],
+    },
+    {
+      featureType: "road.highway",
+      elementType: "geometry.stroke",
+      stylers: [
         {
-          color: "#8e8e93",
+          color: "#3d6860",
         },
       ],
     },
@@ -434,7 +416,7 @@ export const styles = {
       elementType: "geometry.fill",
       stylers: [
         {
-          color: "#0c817b",
+          color: "#5b6b80",
         },
       ],
     },
@@ -448,11 +430,29 @@ export const styles = {
       ],
     },
     {
+      featureType: "road.arterial",
+      elementType: "labels.text.fill",
+      stylers: [
+        {
+          color: "#7b8798",
+        },
+      ],
+    },
+    {
+      featureType: "road.arterial",
+      elementType: "labels.text.stroke",
+      stylers: [
+        {
+          color: "#242f3d",
+        },
+      ],
+    },
+    {
       featureType: "road.local",
       elementType: "labels.text.fill",
       stylers: [
         {
-          color: "#e8e8e8",
+          color: "#7b8798",
         },
       ],
     },
@@ -461,7 +461,7 @@ export const styles = {
       elementType: "labels.text.stroke",
       stylers: [
         {
-          color: "#1c1c1e",
+          color: "#242f3d",
         },
       ],
     },
@@ -483,6 +483,15 @@ export const styles = {
         },
         {
           lightness: "-12",
+        },
+      ],
+    },
+    {
+      featureType: "transit.line",
+      elementType: "geometry.fill",
+      stylers: [
+        {
+          visibility: "off",
         },
       ],
     },
