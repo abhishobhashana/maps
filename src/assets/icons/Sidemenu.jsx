@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Sidemenu = () => {
+export default function Sidemenu() {
   const mode = UseModeChecker();
   return (
     <svg

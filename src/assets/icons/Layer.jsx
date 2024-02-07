@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Layer = () => {
+export default function Layer() {
   const mode = UseModeChecker();
 
   return (
@@ -29,4 +29,4 @@ export const Layer = () => {
       </g>
     </svg>
   );
-};
+}

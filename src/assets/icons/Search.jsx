@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Search = () => {
+export default function Search() {
   const mode = UseModeChecker();
 
   return (

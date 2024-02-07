@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Logo = ({ height, width }) => {
+export default function Logo({ height, width }) {
   const mode = UseModeChecker();
 
   return (
@@ -18,4 +18,4 @@ export const Logo = ({ height, width }) => {
       />
     </svg>
   );
-};
+}

@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const CloseCircle = () => {
+export default function CloseCircle() {
   const mode = UseModeChecker();
 
   return (

@@ -1,6 +1,6 @@
 import React from "react";
 import { OverlayView, Marker as CustomMarker } from "@react-google-maps/api";
-import MarkerIcon from "../../assets/images/marker.png";
+import MarkerIcon from "../../assets/icons/marker.png";
 
 const Marker = ({ markers }) => {
   return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const AppIcon = ({ fill }) => {
+export default function AppIcon({ fill }) {
   const mode = UseModeChecker();
 
   return (
@@ -19,4 +19,4 @@ export const AppIcon = ({ fill }) => {
       />
     </svg>
   );
-};
+}

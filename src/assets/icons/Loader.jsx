@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Loader = () => {
+export default function Loader() {
   const mode = UseModeChecker();
 
   return (

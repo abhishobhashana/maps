@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Close = () => {
+export default function Close() {
   const mode = UseModeChecker();
 
   return (
@@ -18,4 +18,4 @@ export const Close = () => {
       />
     </svg>
   );
-};
+}

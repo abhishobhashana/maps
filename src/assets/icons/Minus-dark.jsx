@@ -1,6 +1,6 @@
 import React from "react";
 
-export const MinusDark = () => {
+export default function MinusDark() {
   return (
     <svg
       width="17"

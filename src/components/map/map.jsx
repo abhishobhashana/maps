@@ -3,42 +3,40 @@ import {
   GoogleMap,
   useLoadScript,
   TrafficLayer,
-  Marker,
   OverlayView,
 } from "@react-google-maps/api";
 import { styles } from "./consts/style";
 import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
-import { Loader } from "../../assets/images/Loader";
 import MapContol from "./mapContol";
-import { Plus } from "../../assets/images/Plus";
-import { Minus } from "../../assets/images/Minus";
-import { PlusDark } from "../../assets/images/Plus-dark";
-import { MinusDark } from "../../assets/images/Minus-dark";
-import { Location } from "../../assets/images/Location";
-// import { List } from "../../assets/images/List";
-import { Layer } from "../../assets/images/Layer";
+import {
+  AppIcon,
+  Check,
+  Close,
+  CloseCircle,
+  Layer,
+  Loader,
+  Location,
+  Logo,
+  Minus,
+  MinusDark,
+  Pin,
+  Plus,
+  PlusDark,
+  Search,
+  Sidemenu,
+} from "../../assets/icons";
 import data from "../../data/data.json";
-import Pin from "../../assets/images/Pin";
-// import Column from "../../assets/images/Column";
-import Check from "../../assets/images/Check";
 import AddMarker from "../../pages/layers/addMarker";
 import MarkerComponent from "../../pages/layers/marker";
-import { AppIcon } from "../../assets/images/AppIcon";
-import { Sidemenu } from "../../assets/images/Sidemenu";
-import { Close } from "../../assets/images/Close";
 import IconButton from "../iconButton";
-import { Search } from "../../assets/images/Search";
 import { UseModeChecker } from "../../useModeChecker";
-// import { Routes } from "../../assets/images/Route";
-import { Logo } from "../../assets/images/Logo";
-import Explore from "../../assets/images/Explore.png";
-import ExploreDark from "../../assets/images/Explore-dark.jpeg";
-import Driving from "../../assets/images/Driving.png";
-import DrivingDark from "../../assets/images/Driving-dark.jpeg";
-import Transit from "../../assets/images/Transit.png";
-import TransitDark from "../../assets/images/Transit-dark.jpeg";
-import Satellite from "../../assets/images/Satellite.png";
-import { CloseCircle } from "../../assets/images/CloseCircle";
+import Explore from "../../assets/icons/Explore.png";
+import ExploreDark from "../../assets/icons/Explore-dark.jpeg";
+import Driving from "../../assets/icons/Driving.png";
+import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
+import Transit from "../../assets/icons/Transit.png";
+import TransitDark from "../../assets/icons/Transit-dark.jpeg";
+import Satellite from "../../assets/icons/Satellite.png";
 
 const libraries = ["places", "visualization"];
 
@@ -434,7 +432,7 @@ const Map = () => {
                       enter="transition ease-out duration-200"
                       enterFrom="transform opacity-0 scale-75"
                       enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-200"
+                      leave="transition ease-in duration-100"
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-75"
                     >
@@ -561,7 +559,7 @@ const Map = () => {
                         enter="transition ease-out duration-200"
                         enterFrom="transform opacity-0 scale-75"
                         enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-200"
+                        leave="transition ease-in duration-100"
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
@@ -620,7 +618,7 @@ const Map = () => {
                         enter="transition ease-out duration-200"
                         enterFrom="transform opacity-0 scale-75"
                         enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-200"
+                        leave="transition ease-in duration-100"
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >

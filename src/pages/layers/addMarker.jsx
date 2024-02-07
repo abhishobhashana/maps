@@ -1,6 +1,6 @@
 import React from "react";
 import { Marker } from "@react-google-maps/api";
-import MarkerIcon from "../../assets/images/marker.png";
+import MarkerIcon from "../../assets/icons/marker.png";
 
 const AddMarker = ({ marker }) => {
   return (
