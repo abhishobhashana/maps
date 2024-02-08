@@ -430,16 +430,16 @@ const Map = () => {
                     <Transition
                       show={open}
                       enter="transition ease-out duration-200"
-                      enterFrom="transform opacity-0 scale-75"
+                      enterFrom="transform opacity-0 scale-50"
                       enterTo="transform opacity-100 scale-100"
                       leave="transition ease-in duration-100"
                       leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-75"
+                      leaveTo="transform opacity-0 scale-50"
                     >
-                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/90 dark:bg-secondary/95 text-base shadow-lg focus:outline-none">
+                      <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl bg-white dark:bg-secondary text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
-                            className="relative cursor-pointer select-none pl-11 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                            className="relative cursor-pointer select-none pl-11 pr-24 py-4 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                             key={items.id}
                             value={items}
                           >
@@ -495,7 +495,7 @@ const Map = () => {
                         placeholder="Search Maps"
                         autoComplete="off"
                         aria-label="Search Maps"
-                        className="flex items-center bg-light-grey text-secondary/70 dark:text-dark-grey text-base p-2.5 pl-9 rounded-xl focus:outline-none"
+                        className="flex items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-base p-2.5 pl-8 rounded-xl focus:outline-none"
                         spellCheck="false"
                         value={searchValue}
                         onChange={(e) => onSearchChange(e.target.value)}
@@ -506,7 +506,7 @@ const Map = () => {
                         <div key={index} className="min-h-screen py-4">
                           <span
                             key={index}
-                            className="bg-light-grey text-secondary/40 dark:text-dark-grey text-base cursor-pointer p-4 rounded-lg"
+                            className="bg-light-grey text-light-grey-third dark:text-light-grey-second text-base cursor-pointer p-4 rounded-lg"
                             onClick={() => onSearchChange(place.name)}
                           >
                             {place.name}
@@ -520,7 +520,7 @@ const Map = () => {
                       .toString()
                       .toLocaleLowerCase()
                       .includes(searchValue) && searchValue.length >= 1 ? (
-                      <span className="min-h-screen flex items-center justify-center text-secondary/70 dark:text-dark-grey text-base pb-40 rounded-lg">
+                      <span className="min-h-screen flex items-center justify-center text-light-grey-third dark:text-light-grey-second text-base pb-40 rounded-lg">
                         {data.noResult}
                       </span>
                     ) : null}
@@ -533,7 +533,7 @@ const Map = () => {
                 >
                   <Sidemenu />
                 </span>
-                <h1 className="text-xl text-secondary dark:text-dark-grey pr-6">
+                <h1 className="text-xl text-secondary dark:text-light-grey-second pr-6">
                   {data.app}
                 </h1>
               </div>
@@ -563,7 +563,7 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary/95 text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
+                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl bg-light-white dark:bg-secondary text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
                           {mapTypes.map((items) => (
                             <Listbox.Option
                               className={({ selected }) =>
@@ -616,16 +616,16 @@ const Map = () => {
                       <Transition
                         show={open}
                         enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-75"
+                        enterFrom="transform opacity-0 scale-50"
                         enterTo="transform opacity-100 scale-100"
                         leave="transition ease-in duration-100"
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-75"
                       >
-                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl py-1 backdrop-blur-sm bg-white/80 dark:bg-secondary/95 text-base shadow-2xl focus:outline-none">
+                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
                           {menuItems.map((items) => (
                             <Listbox.Option
-                              className="relative cursor-pointer select-none pl-10 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                              className="relative cursor-pointer select-none pl-10 pr-24 py-3 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                               key={items.id}
                               value={items}
                             >
@@ -637,7 +637,7 @@ const Map = () => {
                                     </span>
                                   )}
 
-                                  <span className="block truncate font-sans text-secondary dark:text-white">
+                                  <span className="block truncate font-sans text-base text-secondary dark:text-white">
                                     {items.name}
                                   </span>
 

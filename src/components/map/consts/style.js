@@ -44,7 +44,7 @@ export const styles = {
       elementType: "geometry.fill",
       stylers: [
         {
-          saturation: 0,
+          saturation: -10,
         },
         {
           lightness: 0,
@@ -59,7 +59,7 @@ export const styles = {
       elementType: "all",
       stylers: [
         {
-          color: "#faf5ed",
+          color: "#f4f1e8",
         },
         {
           lightness: "0",
@@ -124,7 +124,7 @@ export const styles = {
       elementType: "all",
       stylers: [
         {
-          color: "#70d7ff",
+          color: "#dadbdf",
         },
       ],
     },
@@ -133,13 +133,10 @@ export const styles = {
       elementType: "geometry",
       stylers: [
         {
-          visibility: "simplified",
+          weight: 1,
         },
         {
-          weight: 1.5,
-        },
-        {
-          color: "#30b0c7",
+          color: "#b3b4b9",
         },
       ],
     },
@@ -205,7 +202,7 @@ export const styles = {
       elementType: "all",
       stylers: [
         {
-          color: "#70d7ff",
+          color: "#8bdbf6",
         },
       ],
     },

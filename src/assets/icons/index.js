@@ -3,8 +3,10 @@ import { default as Check } from "./Check";
 import { default as Close } from "./Close";
 import { default as CloseCircle } from "./CloseCircle";
 import { default as Cloud } from "./Cloud";
+import { default as CloudNight } from "./CloudNight";
 import { default as CloudSun } from "./CloudSun";
 import { default as Column } from "./Column";
+import { default as Fog } from "./Fog";
 import { default as Layer } from "./Layer";
 import { default as List } from "./List";
 import { default as Loader } from "./Loader";
@@ -12,11 +14,13 @@ import { default as Location } from "./Location";
 import { default as Logo } from "./Logo";
 import { default as Minus } from "./Minus";
 import { default as MinusDark } from "./Minus-dark";
+import { default as Night } from "./Night";
 import { default as Pin } from "./Pin";
 import { default as Plus } from "./Plus";
 import { default as PlusDark } from "./Plus-dark";
 import { default as Rain } from "./Rain";
 import { default as RainHeavy } from "./RainHeavy";
+import { default as RainNight } from "./RainNight";
 import { default as Search } from "./Search";
 import { default as Sidemenu } from "./Sidemenu";
 import { default as Snow } from "./Snow";
@@ -29,8 +33,10 @@ export {
   Close,
   CloseCircle,
   Cloud,
+  CloudNight,
   CloudSun,
   Column,
+  Fog,
   Layer,
   List,
   Loader,
@@ -38,6 +44,7 @@ export {
   Logo,
   Minus,
   MinusDark,
+  Night,
   Pin,
   Plus,
   PlusDark,
@@ -47,5 +54,6 @@ export {
   Sun,
   Rain,
   RainHeavy,
+  RainNight,
   ThunderStorm,
 };
