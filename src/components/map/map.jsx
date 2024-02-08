@@ -404,7 +404,7 @@ const Map = () => {
                                   className="relative h-[4.5rem] w-full rounded-t-xl"
                                   src={items.img}
                                 />
-                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-secondary dark:text-white leading-none">
+                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
                                   {items.name}
                                 </span>
                               </div>
@@ -439,7 +439,7 @@ const Map = () => {
                       <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl bg-white dark:bg-secondary text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
-                            className="relative cursor-pointer select-none pl-11 pr-24 py-2.5 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                            className="relative cursor-pointer select-none pl-11 pr-24 py-3 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                             key={items.id}
                             value={items}
                           >
@@ -451,7 +451,7 @@ const Map = () => {
                                   </span>
                                 )}
 
-                                <span className="block truncate font-sans text-base text-secondary dark:text-white">
+                                <span className="block truncate font-sans text-[1.063rem] text-secondary dark:text-white">
                                   {items.name}
                                 </span>
 

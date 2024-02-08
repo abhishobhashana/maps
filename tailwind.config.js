@@ -26,10 +26,6 @@ export default {
       display: ["SF Pro Display", "sans-serif"],
       mono: ["SF Mono", "monospace"],
     },
-    fontSize: {
-      base: ["1.063rem"],
-      xl: ["1.25rem"],
-    },
     extend: {
       animation: {
         "spin-slow": "spin 2s linear infinite",
