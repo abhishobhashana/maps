@@ -430,16 +430,16 @@ const Map = () => {
                     <Transition
                       show={open}
                       enter="transition ease-out duration-200"
-                      enterFrom="transform opacity-0 scale-50"
+                      enterFrom="transform opacity-0 scale-75"
                       enterTo="transform opacity-100 scale-100"
                       leave="transition ease-in duration-100"
                       leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-50"
+                      leaveTo="transform opacity-0 scale-75"
                     >
                       <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl bg-white dark:bg-secondary text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
-                            className="relative cursor-pointer select-none pl-11 pr-24 py-4 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                            className="relative cursor-pointer select-none pl-11 pr-24 py-2.5 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                             key={items.id}
                             value={items}
                           >
@@ -616,7 +616,7 @@ const Map = () => {
                       <Transition
                         show={open}
                         enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-50"
+                        enterFrom="transform opacity-0 scale-75"
                         enterTo="transform opacity-100 scale-100"
                         leave="transition ease-in duration-100"
                         leaveFrom="transform opacity-100 scale-100"
