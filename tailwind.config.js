@@ -5,7 +5,7 @@ export default {
     colors: {
       default: "rgba(0, 0, 0, 1)",
       primary: "rgba(26, 26, 26, 1)",
-      secondary: "rgba(51, 51, 51)",
+      secondary: "rgba(38, 38, 38)",
       white: "rgba(255, 255, 255, 1)",
       "light-white": "rgba(242, 242, 242)",
       border: "rgba(17, 17, 17, 0.25)",

@@ -439,7 +439,7 @@ const Map = () => {
                       <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl bg-white dark:bg-secondary text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
                           <Listbox.Option
-                            className="relative cursor-pointer select-none pl-11 pr-24 py-3 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                            className="relative cursor-pointer select-none pl-10 pr-16 py-2.5 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                             key={items.id}
                             value={items}
                           >
@@ -451,7 +451,7 @@ const Map = () => {
                                   </span>
                                 )}
 
-                                <span className="block truncate font-sans text-[1.063rem] text-secondary dark:text-white">
+                                <span className="block truncate font-sans text-[17px] text-secondary dark:text-white">
                                   {items.name}
                                 </span>
 
@@ -471,7 +471,7 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.TOP_CENTER}>
-            <div className="hidden lg:flex md:flex h-14 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator flex items-center justify-between first:p-0 first:pr-6 px-6 py-3.5">
+            <div className="hidden lg:flex md:flex h-12 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator flex items-center justify-between first:p-0 first:pr-6 px-6 py-3.5">
               <div className="flex items-center">
                 {openSideMenu && (
                   <div
@@ -485,6 +485,7 @@ const Map = () => {
                     >
                       <Close />
                     </span>
+
                     <div className="grid w-80 relative items-center">
                       <span className="absolute ml-2 pointer-events-none">
                         <Search />
@@ -501,6 +502,51 @@ const Map = () => {
                         onChange={(e) => onSearchChange(e.target.value)}
                       />
                     </div>
+
+                    <div className="flex flex-col gap-8">
+                      <div className="flex flex-col">
+                        <span className="p-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator">
+                          recent
+                        </span>
+                        <div className="flex items-center border-b-2 border-seperator">
+                          <CloseCircle />
+                          <span className="p-2.5 text-base text-medium">
+                            Junagadh
+                          </span>
+                        </div>
+                        <div className="flex items-center border-b-2 border-seperator">
+                          <CloseCircle />
+                          <span className="p-2.5 text-base text-medium">
+                            Ahmedabad
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col">
+                        <span className="p-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator">
+                          find nearby
+                        </span>
+                        <div className="flex items-center border-b-2 border-seperator">
+                          <CloseCircle />
+                          <span className="p-2.5 text-base text-medium">
+                            Petrol Pump
+                          </span>
+                        </div>
+                        <div className="flex items-center border-b-2 border-seperator">
+                          <CloseCircle />
+                          <span className="p-2.5 text-base text-medium">
+                            Gas Station
+                          </span>
+                        </div>
+                        <div className="flex items-center border-b-2 border-seperator">
+                          <CloseCircle />
+                          <span className="p-2.5 text-base text-medium">
+                            Hotel
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
                     {searchResult.slice(0, 8).map((place, index) => {
                       return (
                         <div key={index} className="min-h-screen py-4">
@@ -526,6 +572,7 @@ const Map = () => {
                     ) : null}
                   </div>
                 )}
+
                 <span
                   className={`${openSideMenu ? "pr-6" : "px-6"} cursor-pointer`}
                   title="show menu"
@@ -625,7 +672,7 @@ const Map = () => {
                         <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
                           {menuItems.map((items) => (
                             <Listbox.Option
-                              className="relative cursor-pointer select-none pl-10 pr-24 py-3 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
+                              className="relative cursor-pointer select-none pl-10 pr-16 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
                               key={items.id}
                               value={items}
                             >
