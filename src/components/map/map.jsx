@@ -10,20 +10,25 @@ import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import MapContol from "./mapContol";
 import {
   AppIcon,
+  Bed,
   Check,
   Close,
   CloseCircle,
+  Fork,
   Layer,
   Loader,
   Location,
   Logo,
   Minus,
   MinusDark,
+  Parking,
   Pin,
   Plus,
   PlusDark,
+  Pump,
   Search,
   Sidemenu,
+  Train,
 } from "../../assets/icons";
 import data from "../../data/data.json";
 import AddMarker from "../../pages/layers/addMarker";
@@ -87,6 +92,33 @@ const Map = () => {
       id: 3,
       name: data.satellite,
       img: Satellite,
+    },
+  ];
+
+  const nearbyValues = [
+    {
+      name: data.petrolPumps,
+      icon: <Pump />,
+    },
+    {
+      name: data.dinner,
+      icon: <Fork />,
+    },
+    {
+      name: data.hotel,
+      icon: <Bed />,
+    },
+    {
+      name: data.cngStation,
+      icon: <Pump />,
+    },
+    {
+      name: data.railwayStation,
+      icon: <Train />,
+    },
+    {
+      name: data.parking,
+      icon: <Parking />,
     },
   ];
 
@@ -237,14 +269,6 @@ const Map = () => {
     return;
   };
 
-  useEffect(() => {
-    if (selected.id === 1) {
-      setZoom(6);
-    } else {
-      setZoom(13);
-    }
-  }, [selected]);
-
   function handleZoomChanged() {
     const currentZoom = this.getZoom();
     setZoom(currentZoom);
@@ -257,6 +281,18 @@ const Map = () => {
   const openModal = () => {
     setIsOpen(true);
   };
+
+  const handleFindNearbyClick = (e, name) => {
+    console.log(name);
+  };
+
+  useEffect(() => {
+    if (selected.id === 1) {
+      setZoom(6);
+    } else {
+      setZoom(13);
+    }
+  }, [selected]);
 
   useEffect(() => {
     switch (mapTypeLayer.id) {
@@ -365,13 +401,13 @@ const Map = () => {
                 enter="transform transition ease-in-out duration-200"
                 enterFrom="translate-y-full opacity-0"
                 enterTo="translate-y-0 opacity-100"
-                leave="transform transition ease-in-out duration-100"
+                leave="transform transition ease-in-out duration-200"
                 leaveFrom="translate-y-0 opacity-100"
                 leaveTo="translate-y-full opacity-0"
               >
                 <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl">
                   <div className="flex min-h-full items-center justify-center text-center">
-                    <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-t-2xl bg-white/60 dark:bg-secondary p-6 text-left align-middle shadow-xl transition-all">
+                    <Dialog.Panel className="w-full max-w-md flex flex-col transform overflow-hidden rounded-t-2xl bg-white/60 dark:bg-secondary p-4 gap-4 text-left align-middle shadow-xl transition-all">
                       <div className="flex items-center justify-between">
                         <h1 className="text-2xl text-secondary dark:text-white">
                           Choose Map
@@ -389,7 +425,7 @@ const Map = () => {
                         value={mapTypeLayer}
                         onChange={setMapTypeLayer}
                       >
-                        <div className="grid grid-cols-2 gap-5 pt-5">
+                        <div className="grid grid-cols-2 gap-4">
                           {mapTypes.map((items) => (
                             <RadioGroup.Option
                               key={items.id}
@@ -401,10 +437,10 @@ const Map = () => {
                             >
                               <div className="flex flex-col w-full items-center justify-between">
                                 <img
-                                  className="relative h-[4.5rem] w-full rounded-t-xl"
+                                  className="relative h-[4.5rem] w-full rounded-t-lg"
                                   src={items.img}
                                 />
-                                <span className="rounded-b-xl p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
+                                <span className="rounded-b-lg p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
                                   {items.name}
                                 </span>
                               </div>
@@ -432,7 +468,7 @@ const Map = () => {
                       enter="transition ease-out duration-200"
                       enterFrom="transform opacity-0 scale-75"
                       enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-100"
+                      leave="transition ease-in duration-200"
                       leaveFrom="transform opacity-100 scale-100"
                       leaveTo="transform opacity-0 scale-75"
                     >
@@ -470,7 +506,7 @@ const Map = () => {
             </div>
           </MapContol>
 
-          <MapContol position={google.maps.ControlPosition.TOP_CENTER}>
+          <MapContol position={google.maps.ControlPosition.TOP_CENTER} zIndex={1}>
             <div className="hidden lg:flex md:flex h-12 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator flex items-center justify-between first:p-0 first:pr-6 px-6 py-3.5">
               <div className="flex items-center">
                 {openSideMenu && (
@@ -480,7 +516,7 @@ const Map = () => {
                     } h-[91rem] w-full mt-[87rem] flex flex-col gap-4 p-6 bg-light-white dark:bg-secondary text-white shadow-md border-r-2 border-seperator dark:border-dark-seperator`}
                   >
                     <span
-                      className="cursor-pointer"
+                      className="w-fit cursor-pointer"
                       onClick={() => setOpenSideMenu(!openSideMenu)}
                     >
                       <Close />
@@ -503,50 +539,6 @@ const Map = () => {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-8">
-                      <div className="flex flex-col">
-                        <span className="p-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator">
-                          recent
-                        </span>
-                        <div className="flex items-center border-b-2 border-seperator">
-                          <CloseCircle />
-                          <span className="p-2.5 text-base text-medium">
-                            Junagadh
-                          </span>
-                        </div>
-                        <div className="flex items-center border-b-2 border-seperator">
-                          <CloseCircle />
-                          <span className="p-2.5 text-base text-medium">
-                            Ahmedabad
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col">
-                        <span className="p-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator">
-                          find nearby
-                        </span>
-                        <div className="flex items-center border-b-2 border-seperator">
-                          <CloseCircle />
-                          <span className="p-2.5 text-base text-medium">
-                            Petrol Pump
-                          </span>
-                        </div>
-                        <div className="flex items-center border-b-2 border-seperator">
-                          <CloseCircle />
-                          <span className="p-2.5 text-base text-medium">
-                            Gas Station
-                          </span>
-                        </div>
-                        <div className="flex items-center border-b-2 border-seperator">
-                          <CloseCircle />
-                          <span className="p-2.5 text-base text-medium">
-                            Hotel
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
                     {searchResult.slice(0, 8).map((place, index) => {
                       return (
                         <div key={index} className="min-h-screen py-4">
@@ -560,6 +552,50 @@ const Map = () => {
                         </div>
                       );
                     })}
+
+                    {!searchValue.length ? (
+                      <div className="flex flex-col gap-5">
+                        <div className="flex flex-col">
+                          <span className="p-0 pb-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator dark:border-dark-seperator">
+                            Recents
+                          </span>
+                          <div className="flex items-center border-b border-seperator border-seperator dark:border-dark-seperator">
+                            <Search />
+                            <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                              Junagadh
+                            </span>
+                          </div>
+                          <div className="flex items-center">
+                            <Search />
+                            <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                              Ahmedabad
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col">
+                          <span className="p-0 pb-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator dark:border-dark-seperator">
+                            Find Nearby
+                          </span>
+                          {nearbyValues.map((items, index) => {
+                            return (
+                              <div
+                                className="flex items-center cursor-pointer border-b last:border-none border-seperator dark:border-dark-seperator"
+                                key={index}
+                                onClick={(e) =>
+                                  handleFindNearbyClick(e, items.name)
+                                }
+                              >
+                                {items.icon}
+                                <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                                  {items.name}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : null}
 
                     {!searchResult
                       .map((e) => e.name)

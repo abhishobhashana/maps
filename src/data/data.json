@@ -10,5 +10,11 @@
   "satellite": "Satellite",
   "noResult": "No suggestions found.",
   "notFound": "Page Not Found",
-  "notFoundMessage": " The page you’re looking for can’t be found."
+  "notFoundMessage": " The page you’re looking for can’t be found.",
+  "petrolPumps": "Petrol Pumps",
+  "dinner": "Dinner",
+  "hotel": "Hotel",
+  "cngStation": "CNG Station",
+  "railwayStation": "Railway Stations",
+  "parking": "Parking"
 }
