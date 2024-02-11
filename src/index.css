@@ -11,11 +11,15 @@ body {
 }
 
 .map-btn:hover > span > svg > path {
-  fill: rgba(255, 255, 255, 1);
+  fill: rgba(242, 242, 242, 1);
 }
 
 .map-btn-dark:hover > span > svg > path {
   fill: rgba(44, 44, 46, 1);
+}
+
+.map-btn-dark:hover > svg > g > path {
+  stroke: rgba(242, 242, 242, 1);
 }
 
 .poi-info-window div {

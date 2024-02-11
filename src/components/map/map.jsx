@@ -378,6 +378,49 @@ const Map = () => {
             </div>
           </MapContol>
 
+          <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col gap-4 bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
+            <div className="flex w-full relative items-center">
+              <span className="absolute ml-2 pointer-events-none">
+                <Search />
+              </span>
+
+              <input
+                type="text"
+                placeholder="Search Maps"
+                autoComplete="off"
+                aria-label="Search Maps"
+                className="flex w-full items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-[17px] p-2.5 pl-8 rounded-xl focus:outline-none"
+                spellCheck="false"
+                value={searchValue}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+            </div>
+
+            {/* {!searchValue.length ? ( */}
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <span className="p-0 pb-2.5 text-base font-semibold text-light-grey-third">
+                  Recents
+                </span>
+                <div className="bg-white dark:bg-grey rounded-lg">
+                  <div className="p-4 flex items-center border-b border-seperator border-seperator dark:border-dark-seperator">
+                    <Search />
+                    <span className="w-full pl-2.5 text-[17px] font-semibold text-secondary dark:text-white">
+                      Junagadh
+                    </span>
+                  </div>
+                  <div className="p-4 flex items-center">
+                    <Search />
+                    <span className="w-full pl-2.5 text-[17px] font-semibold text-secondary dark:text-white">
+                      Ahmedabad
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* ) : null} */}
+          </div>
+
           <Transition appear show={isOpen} as={Fragment}>
             <Dialog
               as="div"
@@ -432,7 +475,7 @@ const Map = () => {
                               value={items}
                               className={({ active }) =>
                                 `${active ? "border-2 border-dark-blue" : ""}
-                  relative cursor-pointer select-none rounded-xl w-full box-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                  relative cursor-pointer select-none rounded-lg w-full box-border focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
                               }
                             >
                               <div className="flex flex-col w-full items-center justify-between">
@@ -466,11 +509,11 @@ const Map = () => {
                     <Transition
                       show={open}
                       enter="transition ease-out duration-200"
-                      enterFrom="transform opacity-0 scale-75"
+                      enterFrom="transform opacity-0 scale-50"
                       enterTo="transform opacity-100 scale-100"
                       leave="transition ease-in duration-200"
                       leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-75"
+                      leaveTo="transform opacity-0 scale-50"
                     >
                       <Listbox.Options className="absolute mt-3 right-0 max-h-60 overflow-auto rounded-xl bg-white dark:bg-secondary text-base shadow-lg focus:outline-none">
                         {menuItems.map((items) => (
@@ -506,7 +549,10 @@ const Map = () => {
             </div>
           </MapContol>
 
-          <MapContol position={google.maps.ControlPosition.TOP_CENTER} zIndex={1}>
+          <MapContol
+            position={google.maps.ControlPosition.TOP_CENTER}
+            zIndex={1}
+          >
             <div className="hidden lg:flex md:flex h-12 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator flex items-center justify-between first:p-0 first:pr-6 px-6 py-3.5">
               <div className="flex items-center">
                 {openSideMenu && (
@@ -532,7 +578,7 @@ const Map = () => {
                         placeholder="Search Maps"
                         autoComplete="off"
                         aria-label="Search Maps"
-                        className="flex items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-base p-2.5 pl-8 rounded-xl focus:outline-none"
+                        className="flex items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-base p-2 pl-8 rounded-xl focus:outline-none"
                         spellCheck="false"
                         value={searchValue}
                         onChange={(e) => onSearchChange(e.target.value)}
@@ -561,13 +607,13 @@ const Map = () => {
                           </span>
                           <div className="flex items-center border-b border-seperator border-seperator dark:border-dark-seperator">
                             <Search />
-                            <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                            <span className="p-2.5 text-base text-medium text-secondary dark:text-white">
                               Junagadh
                             </span>
                           </div>
                           <div className="flex items-center">
                             <Search />
-                            <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                            <span className="p-2.5 text-base text-medium text-secondary dark:text-white">
                               Ahmedabad
                             </span>
                           </div>
@@ -587,7 +633,7 @@ const Map = () => {
                                 }
                               >
                                 {items.icon}
-                                <span className="p-3 text-base text-medium text-secondary dark:text-white">
+                                <span className="p-2.5 text-base text-medium text-secondary dark:text-white">
                                   {items.name}
                                 </span>
                               </div>
@@ -640,13 +686,13 @@ const Map = () => {
                       <Transition
                         show={open}
                         enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-75"
+                        enterFrom="transform opacity-0 scale-50"
                         enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-100"
+                        leave="transition ease-in duration-200"
                         leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-75"
+                        leaveTo="transform opacity-0 scale-50"
                       >
-                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-6 p-4 right-[-0.5rem]  overflow-auto rounded-xl bg-light-white dark:bg-secondary text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
+                        <Listbox.Options className="absolute w-max grid grid-cols-2 gap-4 items-center mt-4 p-4 right-[-0.5rem]  overflow-auto rounded-xl bg-light-white dark:bg-secondary text-base shadow-2xl border border-seperator dark:border-dark-seperator focus:outline-none">
                           {mapTypes.map((items) => (
                             <Listbox.Option
                               className={({ selected }) =>
@@ -699,13 +745,13 @@ const Map = () => {
                       <Transition
                         show={open}
                         enter="transition ease-out duration-200"
-                        enterFrom="transform opacity-0 scale-75"
+                        enterFrom="transform opacity-0 scale-50"
                         enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-100"
+                        leave="transition ease-in duration-200"
                         leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-75"
+                        leaveTo="transform opacity-0 scale-50"
                       >
-                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
+                        <Listbox.Options className="absolute mt-4 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
                           {menuItems.map((items) => (
                             <Listbox.Option
                               className="relative cursor-pointer select-none pl-10 pr-16 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"

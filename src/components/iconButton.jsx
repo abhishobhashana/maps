@@ -5,7 +5,7 @@ const IconButton = ({ className, small, disableVal, icon, onClick }) => {
     <button
       className={`${className ? className : ""} ${
         disableVal ? "pointer-events-none opacity-50" : ""
-      } ${small ? "p-2.5" : "p-3.5"}`}
+      } ${small ? "p-2" : "p-3.5"}`}
       onClick={onClick}
     >
       <span
