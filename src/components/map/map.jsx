@@ -370,7 +370,7 @@ const Map = () => {
           <MapContol position={google.maps.ControlPosition.RIGHT_TOP}>
             <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-white dark:bg-secondary shadow-md rounded-xl m-4">
               <IconButton
-                className="border-b border-seperator dark:border-dark-seperator focus-visible:outline-none"
+                className="border-b border-seperator/10 dark:border-dark-seperator focus-visible:outline-none"
                 icon={<Logo />}
                 onClick={openModal}
               />
@@ -378,48 +378,62 @@ const Map = () => {
             </div>
           </MapContol>
 
-          <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col gap-4 bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
-            <div className="flex w-full relative items-center">
-              <span className="absolute ml-2 pointer-events-none">
-                <Search />
-              </span>
-
-              <input
-                type="text"
-                placeholder="Search Maps"
-                autoComplete="off"
-                aria-label="Search Maps"
-                className="flex w-full items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-[17px] p-2.5 pl-8 rounded-xl focus:outline-none"
-                spellCheck="false"
-                value={searchValue}
-                onChange={(e) => onSearchChange(e.target.value)}
-              />
-            </div>
-
-            {/* {!searchValue.length ? ( */}
-            <div className="flex flex-col gap-5">
-              <div className="flex flex-col">
-                <span className="p-0 pb-2.5 text-base font-semibold text-light-grey-third">
-                  Recents
-                </span>
-                <div className="bg-white dark:bg-grey rounded-lg">
-                  <div className="p-4 flex items-center border-b border-seperator border-seperator dark:border-dark-seperator">
+          <MapContol position={google.maps.ControlPosition.LEFT_BOTTOM}>
+            <Transition
+              appear
+              show={true}
+              as={Fragment}
+              enter="transform transition ease-in-out duration-200"
+              enterFrom="translate-y-full opacity-0"
+              enterTo="translate-y-0 opacity-100"
+              leave="transform transition ease-in-out duration-200"
+              leaveFrom="translate-y-0 opacity-100"
+              leaveTo="translate-y-full opacity-0"
+            >
+              <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col gap-4 bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
+                <div className="flex w-full relative items-center">
+                  <span className="absolute ml-2 pointer-events-none">
                     <Search />
-                    <span className="w-full pl-2.5 text-[17px] font-semibold text-secondary dark:text-white">
-                      Junagadh
+                  </span>
+
+                  <input
+                    type="text"
+                    placeholder="Search Maps"
+                    autoComplete="off"
+                    aria-label="Search Maps"
+                    className="flex w-full items-center bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary dark:text-white text-[17px] p-2 pl-8 rounded-xl focus:outline-none"
+                    spellCheck="false"
+                    value={searchValue}
+                    onChange={(e) => onSearchChange(e.target.value)}
+                  />
+                </div>
+
+                {/* {!searchValue.length ? ( */}
+                <div className="flex flex-col gap-5">
+                  <div className="flex flex-col">
+                    <span className="p-0 pb-2.5 text-base font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                      Recents
                     </span>
-                  </div>
-                  <div className="p-4 flex items-center">
-                    <Search />
-                    <span className="w-full pl-2.5 text-[17px] font-semibold text-secondary dark:text-white">
-                      Ahmedabad
-                    </span>
+                    <div className="pl-4 bg-white dark:bg-grey rounded-lg">
+                      <div className="p-4 px-0 flex items-center border-b border-seperator/10 dark:border-dark-seperator/40">
+                        <Search />
+                        <span className="w-full pl-2 text-[17px] font-sansMedium text-secondary dark:text-white">
+                          Junagadh
+                        </span>
+                      </div>
+                      <div className="p-4 px-0 flex items-center">
+                        <Search />
+                        <span className="w-full pl-2 text-[17px] font-sansMedium text-secondary dark:text-white">
+                          Ahmedabad
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+                {/* ) : null} */}
               </div>
-            </div>
-            {/* ) : null} */}
-          </div>
+            </Transition>
+          </MapContol>
 
           <Transition appear show={isOpen} as={Fragment}>
             <Dialog
@@ -578,7 +592,7 @@ const Map = () => {
                         placeholder="Search Maps"
                         autoComplete="off"
                         aria-label="Search Maps"
-                        className="flex items-center bg-light-grey text-light-grey-third dark:text-light-grey-second text-base p-2 pl-8 rounded-xl focus:outline-none"
+                        className="flex items-center bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary dark:text-white text-base p-2 pl-8 rounded-xl focus:outline-none"
                         spellCheck="false"
                         value={searchValue}
                         onChange={(e) => onSearchChange(e.target.value)}
@@ -605,7 +619,7 @@ const Map = () => {
                           <span className="p-0 pb-2.5 text-sm font-semibold text-light-grey-third border-b-2 border-seperator dark:border-dark-seperator">
                             Recents
                           </span>
-                          <div className="flex items-center border-b border-seperator border-seperator dark:border-dark-seperator">
+                          <div className="flex items-center border-b border-seperator dark:border-dark-seperator">
                             <Search />
                             <span className="p-2.5 text-base text-medium text-secondary dark:text-white">
                               Junagadh

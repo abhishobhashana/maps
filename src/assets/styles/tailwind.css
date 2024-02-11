@@ -4,11 +4,15 @@
 
 @font-face {
   font-family: "SF Pro Text";
-  src: url("../fonts/sf-pro-text.woff2") format("woff2");
+  src: url("../fonts/sf-pro-text-regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "SF Pro Text Medium";
+  src: url("../fonts/sf-pro-text-medium.woff2") format("woff2");
 }
 @font-face {
   font-family: "SF Pro Display";
-  src: url("../fonts/sf-pro-display_medium.woff2") format("woff2");
+  src: url("../fonts/sf-pro-display-regular.woff2") format("woff2");
 }
 @font-face {
   font-family: "SF Mono";

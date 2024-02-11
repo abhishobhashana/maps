@@ -23,6 +23,7 @@ export default {
     },
     fontFamily: {
       sans: ["SF Pro Text", "sans-serif"],
+      sansMedium: ["SF Pro Text Medium", "sans-serif"],
       display: ["SF Pro Display", "sans-serif"],
       mono: ["SF Mono", "monospace"],
     },
