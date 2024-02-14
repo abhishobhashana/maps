@@ -1,5 +1,6 @@
 import { default as AppIcon } from "./AppIcon";
 import { default as Bed } from "./Bed";
+import { default as Car } from "./Car";
 import { default as Check } from "./Check";
 import { default as Close } from "./Close";
 import { default as CloseCircle } from "./CloseCircle";
@@ -9,6 +10,7 @@ import { default as CloudSun } from "./CloudSun";
 import { default as Column } from "./Column";
 import { default as Fog } from "./Fog";
 import { default as Fork } from "./Fork";
+import { default as Globe } from "./Globe";
 import { default as Layer } from "./Layer";
 import { default as List } from "./List";
 import { default as Loader } from "./Loader";
@@ -31,10 +33,12 @@ import { default as Snow } from "./Snow";
 import { default as Sun } from "./Sun";
 import { default as ThunderStorm } from "./ThunderStorm";
 import { default as Train } from "./Train";
+import { default as TrainMain } from "./TrainMain";
 
 export {
   AppIcon,
   Bed,
+  Car,
   Check,
   Close,
   CloseCircle,
@@ -44,6 +48,7 @@ export {
   Column,
   Fog,
   Fork,
+  Globe,
   Layer,
   List,
   Loader,
@@ -66,4 +71,5 @@ export {
   RainNight,
   ThunderStorm,
   Train,
+  TrainMain,
 };

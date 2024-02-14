@@ -11,10 +11,12 @@ import MapContol from "./mapContol";
 import {
   AppIcon,
   Bed,
+  Car,
   Check,
   Close,
   CloseCircle,
   Fork,
+  Globe,
   Layer,
   Loader,
   Location,
@@ -29,6 +31,7 @@ import {
   Search,
   Sidemenu,
   Train,
+  TrainMain,
 } from "../../assets/icons";
 import data from "../../data/data.json";
 import AddMarker from "../../pages/layers/addMarker";
@@ -71,6 +74,9 @@ const Map = () => {
   const [position, setPosition] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
   const [mapType, setMapType] = useState("satellite");
+  const [mapTypeIcon, setMapTypeIcon] = useState({
+    icon: <Layer />,
+  });
 
   const mapTypes = [
     {
@@ -298,21 +304,33 @@ const Map = () => {
     switch (mapTypeLayer.id) {
       case 0:
         setMapType("roadmap");
+        setMapTypeIcon({
+          icon: <Logo />,
+        });
         setShowTraffic(false);
         break;
 
       case 1:
         setMapType("roadmap");
+        setMapTypeIcon({
+          icon: <Car />,
+        });
         setShowTraffic(true);
         break;
 
       case 2:
         setMapType("roadmap");
+        setMapTypeIcon({
+          icon: <TrainMain />,
+        });
         setShowTraffic(false);
         break;
 
       case 3:
         setMapType("satellite");
+        setMapTypeIcon({
+          icon: <Globe />,
+        });
         setShowTraffic(false);
         break;
 
@@ -371,7 +389,7 @@ const Map = () => {
             <div className="hidden sm:flex lg:hidden md:hidden w-fit flex flex-col items-center bg-white dark:bg-secondary shadow-md rounded-xl m-4">
               <IconButton
                 className="border-b border-seperator/10 dark:border-dark-seperator focus-visible:outline-none"
-                icon={<Logo />}
+                icon={mapTypeIcon.icon}
                 onClick={openModal}
               />
               <IconButton icon={<Location />} onClick={handleLocation} />
@@ -395,6 +413,15 @@ const Map = () => {
                   <span className="absolute ml-2 pointer-events-none">
                     <Search />
                   </span>
+
+                  {searchValue.length ? (
+                    <span
+                      className="absolute right-2 cursor-pointer"
+                      onClick={() => setSearchValue("")}
+                    >
+                      <CloseCircle input />
+                    </span>
+                  ) : null}
 
                   <input
                     type="text"
@@ -466,9 +493,9 @@ const Map = () => {
                   <div className="flex min-h-full items-center justify-center text-center">
                     <Dialog.Panel className="w-full max-w-md flex flex-col transform overflow-hidden rounded-t-2xl bg-white/60 dark:bg-secondary p-4 gap-4 text-left align-middle shadow-xl transition-all">
                       <div className="flex items-center justify-between">
-                        <h1 className="text-2xl text-secondary dark:text-white">
+                        <span className="font-sansMedium text-2xl text-secondary dark:text-white">
                           Choose Map
-                        </h1>
+                        </span>
                         <span
                           className="text-2xl text-secondary dark:text-white"
                           onClick={closeModal}
@@ -586,6 +613,15 @@ const Map = () => {
                       <span className="absolute ml-2 pointer-events-none">
                         <Search />
                       </span>
+
+                      {searchValue.length ? (
+                        <span
+                          className="absolute right-2 cursor-pointer"
+                          onClick={() => setSearchValue("")}
+                        >
+                          <CloseCircle input />
+                        </span>
+                      ) : null}
 
                       <input
                         type="text"
