@@ -16,6 +16,7 @@ import { default as List } from "./List";
 import { default as Loader } from "./Loader";
 import { default as Location } from "./Location";
 import { default as Logo } from "./Logo";
+import { default as MapIcon } from "./MapIcon";
 import { default as Minus } from "./Minus";
 import { default as MinusDark } from "./Minus-dark";
 import { default as Night } from "./Night";
@@ -54,6 +55,7 @@ export {
   Loader,
   Location,
   Logo,
+  MapIcon,
   Minus,
   MinusDark,
   Night,

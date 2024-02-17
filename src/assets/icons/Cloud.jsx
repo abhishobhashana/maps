@@ -4,8 +4,8 @@ export default function Cloud() {
 
   return (
     <svg
-      width="28"
-      height="19"
+      width="20"
+      height="20"
       viewBox="0 0 28 19"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

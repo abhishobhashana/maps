@@ -13,8 +13,9 @@
   "notFoundMessage": " The page you’re looking for can’t be found.",
   "petrolPumps": "Petrol Pumps",
   "dinner": "Dinner",
-  "hotel": "Hotel",
+  "hotel": "Hotels",
   "cngStation": "CNG Station",
   "railwayStation": "Railway Stations",
-  "parking": "Parking"
+  "parking": "Parking",
+  "cancel": "Cancel"
 }
