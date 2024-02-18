@@ -590,7 +590,7 @@ const Map = () => {
                                   className="relative h-[4.5rem] w-full rounded-t-lg"
                                   src={items.img}
                                 />
-                                <span className="rounded-b-lg p-3 w-full truncate text-base bg-light-grey dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
+                                <span className="rounded-b-lg p-3 w-full truncate text-base bg-light-white-second dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
                                   {items.name}
                                 </span>
                               </div>
