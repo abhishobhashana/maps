@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import data from "../data/data.json";
-import favicon from "../../public/favicon.svg";
+import { Logo } from "../assets/icons";
 
 export default function ErrorPage() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function ErrorPage() {
           document.title = data.app;
         }}
       >
-        <img src={favicon} />
+        <Logo />
       </button>
       <div className="min-h-screen flex items-center justify-center text-center text-secondary dark:text-dark-grey px-10">
         <h1 className="lg:text-5xl md:text-3xl sm:text-2xl">

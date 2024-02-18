@@ -28,6 +28,7 @@ import { default as Pump } from "./Pump";
 import { default as Rain } from "./Rain";
 import { default as RainHeavy } from "./RainHeavy";
 import { default as RainNight } from "./RainNight";
+import { default as Routes } from "./Routes";
 import { default as Search } from "./Search";
 import { default as Sidemenu } from "./Sidemenu";
 import { default as Snow } from "./Snow";
@@ -71,6 +72,7 @@ export {
   Rain,
   RainHeavy,
   RainNight,
+  Routes,
   ThunderStorm,
   Train,
   TrainMain,

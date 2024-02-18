@@ -1,7 +1,7 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export const Routes = () => {
+export default function Routes() {
   const mode = UseModeChecker();
 
   return (
@@ -42,4 +42,4 @@ export const Routes = () => {
     //   />
     // </svg>
   );
-};
+}
