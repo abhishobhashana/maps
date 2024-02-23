@@ -54,6 +54,7 @@ import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
 import Transit from "../../assets/icons/Transit.png";
 import TransitDark from "../../assets/icons/Transit-dark.jpeg";
 import Satellite from "../../assets/icons/Satellite.png";
+import Weather from "../weather";
 
 const libraries = ["places", "visualization"];
 
@@ -139,7 +140,6 @@ const Map = () => {
 
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenDirectionModal, setIsOpenDirectionModal] = useState(false);
   const [isOpenSearchPanel, setIsOpenSearchPanel] = useState(false);
   const [showTraffic, setShowTraffic] = useState(false);
   const [selected, setSelected] = useState("");
@@ -299,14 +299,6 @@ const Map = () => {
     setIsOpen(true);
   };
 
-  const closeDirectionModal = () => {
-    setIsOpenDirectionModal(false);
-  };
-
-  const openDirectionModal = () => {
-    setIsOpenDirectionModal(true);
-  };
-
   const handleFindNearbyClick = (e, name) => {
     console.log(name);
   };
@@ -429,12 +421,11 @@ const Map = () => {
             >
               <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
                 {!isOpenSearchPanel && (
-                  <div className="absolute bottom-[15.5rem] right-2.5 flex items-center gap-1 bg-light-white dark:bg-secondary shadow-md rounded-xl p-2">
-                    <Cloud />
-                    <span className="text-[17px]  text-light-grey-second">
-                      22^
-                    </span>
-                  </div>
+                  <Weather
+                    isMobile
+                    latitude={center.lat}
+                    longitude={center.lng}
+                  />
                 )}
 
                 <div className="flex items-center gap-2.5">
@@ -457,7 +448,7 @@ const Map = () => {
                       placeholder="Search Maps"
                       autoComplete="off"
                       aria-label="Search Maps"
-                      className="flex w-full items-center bg-light-white-second dark:bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tighter dark:text-white text-lg leading-none p-2 pl-8 rounded-xl focus:outline-none"
+                      className="flex w-full items-center bg-light-white-second dark:bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tight dark:text-white text-lg leading-none p-2 pl-8 rounded-xl focus:outline-none"
                       spellCheck="false"
                       value={searchValue}
                       onClick={() => setIsOpenSearchPanel(true)}
@@ -483,19 +474,19 @@ const Map = () => {
 
                 <div className="flex flex-col gap-5 pt-4">
                   <div className="flex flex-col">
-                    <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tighter text-light-grey-third dark:text-light-grey-second">
+                    <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second">
                       {data.recents}
                     </span>
                     <div className="pl-4 bg-white dark:bg-grey rounded-lg">
                       <div className="p-4 px-0 flex items-center border-b border-seperator/10 dark:border-dark-seperator/40">
                         <Search />
-                        <span className="w-full pl-2 text-[17px] font-sansMedium tracking-tighter text-secondary dark:text-white">
+                        <span className="w-full pl-2 text-[17px] font-sansMedium tracking-tight text-secondary dark:text-white">
                           Junagadh
                         </span>
                       </div>
                       <div className="p-4 px-0 flex items-center">
                         <Search />
-                        <span className="w-full pl-2 text-[17px] font-sansMedium tracking-tighter text-secondary dark:text-white">
+                        <span className="w-full pl-2 text-[17px] font-sansMedium tracking-tight text-secondary dark:text-white">
                           Ahmedabad
                         </span>
                       </div>
@@ -560,7 +551,7 @@ const Map = () => {
                     <Dialog.Panel className="w-full max-w-md flex flex-col transform overflow-hidden rounded-t-2xl bg-light-white dark:bg-secondary p-4 gap-4 text-left align-middle shadow-xl transition-all">
                       <div className="flex items-center justify-between">
                         <span className="font-displayMedium text-2xl text-secondary dark:text-white">
-                          Choose Map
+                          {data.chooseMap}
                         </span>
                         <span
                           className="text-2xl text-secondary dark:text-white"
@@ -718,25 +709,25 @@ const Map = () => {
                     {!searchValue.length ? (
                       <div className="flex flex-col gap-5">
                         <div className="flex flex-col">
-                          <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tighter text-light-grey-third dark:text-light-grey-second border-b-2 border-seperator dark:border-dark-seperator">
+                          <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second border-b-2 border-seperator dark:border-dark-seperator">
                             {data.recents}
                           </span>
                           <div className="flex items-center border-b border-seperator dark:border-dark-seperator">
                             <Search />
-                            <span className="p-2.5 text-base font-sansMedium tracking-tighter text-secondary dark:text-white">
+                            <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
                               Junagadh
                             </span>
                           </div>
                           <div className="flex items-center">
                             <Search />
-                            <span className="p-2.5 text-base font-sansMedium tracking-tighter text-secondary dark:text-white">
+                            <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
                               Ahmedabad
                             </span>
                           </div>
                         </div>
 
                         <div className="flex flex-col">
-                          <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tighter border-b-2 border-seperator dark:border-dark-seperator text-light-grey-third dark:text-light-grey-second">
+                          <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight border-b-2 border-seperator dark:border-dark-seperator text-light-grey-third dark:text-light-grey-second">
                             {data.nearBy}
                           </span>
                           {nearbyValues.map((items, index) => {
@@ -749,7 +740,7 @@ const Map = () => {
                                 }
                               >
                                 {items.icon}
-                                <span className="p-2.5 text-base tracking-tighter text-secondary dark:text-white">
+                                <span className="p-2.5 text-base tracking-tight text-secondary dark:text-white">
                                   {items.name}
                                 </span>
                               </div>
@@ -778,9 +769,9 @@ const Map = () => {
                 >
                   <Sidemenu />
                 </span>
-                <h1 className="text-xl text-secondary dark:text-light-grey-second pr-6">
+                <span className="font-sansMedium text-lg tracking-tighter text-secondary dark:text-light-grey-second pr-6">
                   {data.app}
-                </h1>
+                </span>
               </div>
 
               <div className="flex items-center gap-8">
@@ -879,7 +870,7 @@ const Map = () => {
                                   placeholder="From"
                                   autoComplete="off"
                                   aria-label="From"
-                                  className="flex w-full items-center bg-light-white-second dark:bg-light-grey  placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tighter dark:text-white text-lg leading-none rounded-t-xl p-2 pl-0 focus:outline-none border-b border-seperator/10 dark:border-dark-seperator/90"
+                                  className="flex w-full items-center bg-light-white-second dark:bg-light-grey  placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tight dark:text-white text-base leading-none rounded-t-xl p-2 pl-0 focus:outline-none border-b border-seperator/10 dark:border-dark-seperator/90"
                                   spellCheck="false"
                                   value={searchValue}
                                   onClick={() => setIsOpenSearchPanel(true)}
@@ -908,7 +899,7 @@ const Map = () => {
                                   placeholder="To"
                                   autoComplete="off"
                                   aria-label="To"
-                                  className="flex w-full items-center bg-light-white-second dark:bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tighter dark:text-white text-lg leading-none p-2 pl-0 rounded-b-xl focus:outline-none"
+                                  className="flex w-full items-center bg-light-white-second dark:bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tight dark:text-white text-base leading-none p-2 pl-0 rounded-b-xl focus:outline-none"
                                   spellCheck="false"
                                   value={searchValue}
                                   onClick={() => setIsOpenSearchPanel(true)}
@@ -949,7 +940,7 @@ const Map = () => {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-50"
                       >
-                        <Listbox.Options className="absolute mt-4 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
+                        <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white dark:bg-secondary text-base shadow-2xl focus:outline-none">
                           {menuItems.map((items) => (
                             <Listbox.Option
                               className="relative cursor-pointer select-none pl-10 pr-16 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
@@ -1027,10 +1018,7 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.LEFT_BOTTOM}>
-            <div className="lg:flex md:hidden sm:hidden flex md:flex w-fit gap-1.5 items-center gap-1 bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 m-3 mr-0">
-              <Cloud />
-              <span className="text-[17px]  text-light-grey-second">22^</span>
-            </div>
+            <Weather latitude={center.lat} longitude={center.lng} />
           </MapContol>
 
           {getLayers()}

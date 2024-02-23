@@ -3,8 +3,8 @@ import React from "react";
 export default function Night() {
   return (
     <svg
-      width="24"
-      height="27"
+      width="20"
+      height="20"
       viewBox="0 0 24 27"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
