@@ -20,5 +20,9 @@
   "chooseMap": "Choose Map",
   "recents": "Recents",
   "nearBy": "Find Nearby",
+  "locationTitle": "Allow \"Maps\" to use your location?",
+  "locationDesc": "your location is used to show your position on the map, get directions, estimate travel times and improve search results.",
+  "allowOnce": "Allow Once",
+  "dontAllow": "Don't Allow",
   "cancel": "Cancel"
 }

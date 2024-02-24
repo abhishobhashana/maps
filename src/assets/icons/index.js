@@ -8,13 +8,13 @@ import { default as Cloud } from "./Cloud";
 import { default as CloudNight } from "./CloudNight";
 import { default as CloudSun } from "./CloudSun";
 import { default as Column } from "./Column";
-import { default as Fog } from "./Fog";
 import { default as Fork } from "./Fork";
 import { default as Globe } from "./Globe";
 import { default as Layer } from "./Layer";
 import { default as List } from "./List";
 import { default as Loader } from "./Loader";
 import { default as Location } from "./Location";
+import { default as LocationDenied } from "./LocationDenied";
 import { default as Logo } from "./Logo";
 import { default as MapIcon } from "./MapIcon";
 import { default as Minus } from "./Minus";
@@ -48,13 +48,13 @@ export {
   CloudNight,
   CloudSun,
   Column,
-  Fog,
   Fork,
   Globe,
   Layer,
   List,
   Loader,
   Location,
+  LocationDenied,
   Logo,
   MapIcon,
   Minus,

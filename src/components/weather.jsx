@@ -3,45 +3,47 @@ import {
   Cloud,
   CloudSun,
   Night,
+  Rain,
+  RainHeavy,
   Snow,
   Sun,
   ThunderStorm,
 } from "../assets/icons";
 
-const Weather = ({ isMobile, latitude, longitude }) => {
+const Weather = ({ isMobile, latitude, longitude, setName }) => {
   const [weatherData, setWeatherData] = useState(null);
   const apiKey = process.env.OPEN_WEATHER_API_KEY;
 
   const getWeatherIcon = (iconCode) => {
     switch (iconCode) {
       case "01d":
-        return <Sun />; // clear sky (day)
+        return <Sun />;
       case "01n":
-        return <Night />; // clear sky (night)
+        return <Night />;
       case "02d":
       case "02n":
-        return <Cloud />; // few clouds
+        return <Cloud />;
       case "03d":
       case "03n":
-        return <CloudSun />; // scattered clouds
+        return <CloudSun />;
       case "04d":
       case "04n":
-        return "☁️"; // broken clouds
+        return <Cloud />
       case "09d":
       case "09n":
-        return "🌧️"; // shower rain
+        return <Rain />
       case "10d":
       case "10n":
-        return "🌦️"; // rain
+        return <RainHeavy />;
       case "11d":
       case "11n":
-        return <ThunderStorm />; // thunderstorm
+        return <ThunderStorm />;
       case "13d":
       case "13n":
-        return <Snow />; // snow
+        return <Snow />;
       case "50d":
       case "50n":
-        return <Night />; // mist
+        return <Night />;
       default:
         return "";
     }
@@ -55,6 +57,7 @@ const Weather = ({ isMobile, latitude, longitude }) => {
         );
         const data = await response.json();
         setWeatherData(data);
+        setName(data?.name)
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }

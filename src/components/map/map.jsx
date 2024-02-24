@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import {
   GoogleMap,
   useLoadScript,
@@ -27,6 +27,7 @@ import {
   Layer,
   Loader,
   Location,
+  LocationDenied,
   Logo,
   MapIcon,
   Minus,
@@ -64,6 +65,7 @@ const Map = () => {
     libraries,
   });
 
+  const mapRef = useRef();
   const mode = UseModeChecker();
   const [center, setCenter] = useState({ lat: 21.5222, lng: 70.4579 });
   const [zoom, setZoom] = useState("");
@@ -138,8 +140,10 @@ const Map = () => {
     },
   ];
 
+  const [locationName, setLocationName] = useState("");
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenLocationModal, setIsOpenLocationModal] = useState(true);
   const [isOpenSearchPanel, setIsOpenSearchPanel] = useState(false);
   const [showTraffic, setShowTraffic] = useState(false);
   const [selected, setSelected] = useState("");
@@ -232,15 +236,30 @@ const Map = () => {
   };
 
   const handleLocation = () => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-      setCenter(pos);
-      setPosition(true);
-      setZoom(18);
-    });
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setCenter(pos);
+        mapRef.current.panTo(pos, { animate: true, duration: 2000 });
+        setPosition(true);
+        setZoom(18);
+        setIsOpenLocationModal(false);
+      },
+      function (error) {
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            setPosition(false);
+            setCenter({ lat: 21.5222, lng: 70.4579 });
+            setIsOpenLocationModal(false);
+            break;
+          default:
+            break;
+        }
+      }
+    );
   };
 
   const handleZoomIn = () => {
@@ -291,12 +310,23 @@ const Map = () => {
     setZoom(currentZoom);
   }
 
+  const openModal = () => {
+    setIsOpen(true);
+  };
+
   const closeModal = () => {
     setIsOpen(false);
   };
 
-  const openModal = () => {
-    setIsOpen(true);
+  const openLocationModal = () => {
+    setIsOpenLocationModal(true);
+  };
+
+  const closeLocationModal = () => {
+    setIsOpenLocationModal(false);
+    setPosition(false);
+    setCenter({ lat: 21.5222, lng: 70.4579 });
+    setLocationName(data.app);
   };
 
   const handleFindNearbyClick = (e, name) => {
@@ -369,6 +399,9 @@ const Map = () => {
         <Loader />
       ) : (
         <GoogleMap
+          onLoad={(map) => {
+            mapRef.current = map;
+          }}
           mapContainerClassName="map"
           mapContainerStyle={containerStyle}
           options={{
@@ -379,6 +412,7 @@ const Map = () => {
             fullscreenControl: false,
             zoomControl: false,
             gestureHandling: "greedy",
+            panControl: true,
             restriction: {
               latLngBounds: {
                 north: 85,
@@ -403,7 +437,10 @@ const Map = () => {
                 icon={mapTypeIcon.icon}
                 onClick={openModal}
               />
-              <IconButton icon={<Location />} onClick={handleLocation} />
+              <IconButton
+                icon={position ? <Location /> : <LocationDenied />}
+                onClick={openLocationModal}
+              />
             </div>
           </MapContol>
 
@@ -420,7 +457,7 @@ const Map = () => {
               leaveTo="translate-y-full opacity-0"
             >
               <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
-                {!isOpenSearchPanel && (
+                {!isOpenSearchPanel && position && (
                   <Weather
                     isMobile
                     latitude={center.lat}
@@ -770,13 +807,13 @@ const Map = () => {
                   <Sidemenu />
                 </span>
                 <span className="font-sansMedium text-lg tracking-tighter text-secondary dark:text-light-grey-second pr-6">
-                  {data.app}
+                  {locationName ? locationName : data.app}
                 </span>
               </div>
 
               <div className="flex items-center gap-8">
-                <button onClick={handleLocation}>
-                  <Location />
+                <button onClick={openLocationModal}>
+                  {position ? <Location /> : <LocationDenied />}
                 </button>
 
                 <Listbox
@@ -1018,8 +1055,75 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.LEFT_BOTTOM}>
-            <Weather latitude={center.lat} longitude={center.lng} />
+            {position && (
+              <Weather
+                latitude={center.lat}
+                longitude={center.lng}
+                setName={(name) => setLocationName(name)}
+              />
+            )}
           </MapContol>
+
+          <Transition appear show={isOpenLocationModal} as={Fragment}>
+            <Dialog as="div" className="relative z-10" onClose={() => {}}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-100"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 backdrop-blur-sm bg-secondary/25 dark:bg-secondary/50" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center lg:p-2 sm:p-10 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-100"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-100"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full flex flex-col max-w-md transform overflow-hidden rounded-lg bg-light-white-second dark:bg-secondary transition-all shadow-lg">
+                      <Dialog.Title
+                        as="h3"
+                        className="lg:p-6 lg:pb-0 sm:p-12 sm:pt-6 sm:pb-0 font-sansMedium text-xl tracking-tighter text-secondary dark:text-white"
+                      >
+                        {data.locationTitle}
+                      </Dialog.Title>
+                      <div className="mt-2">
+                        <p className="lg:p-14 lg:pt-0 lg:pb-6 sm:p-8 sm:pt-0 sm:pb-7 text-[17px] tracking-tight leading-5 text-secondary dark:text-white text-base sm:text-sm">
+                          {data.locationDesc}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col w-full">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center border-y border-seperator/20 dark:border-dark-seperator/90 py-2.5 text-[17px] tracking-tight text-blue focus:outline-none"
+                          onClick={handleLocation}
+                        >
+                          {data.allowOnce}
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex justify-center py-2.5 text-[17px] tracking-tight text-blue focus:outline-none"
+                          onClick={closeLocationModal}
+                        >
+                          {data.dontAllow}
+                        </button>
+                      </div>
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
 
           {getLayers()}
 
