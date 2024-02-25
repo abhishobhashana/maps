@@ -69,14 +69,14 @@ const Weather = ({ isMobile, latitude, longitude, setName }) => {
   return (
     <>
       {isMobile ? (
-        <div className="absolute bottom-[15.5rem] right-2.5 flex items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2">
+        <div className="absolute bottom-[15.5rem] right-2.5 flex items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 gap-0.5">
           {getWeatherIcon(weatherData?.weather[0]?.icon)}
           <span className="text-[17px]  text-light-grey-second">
             {Math.trunc(weatherData?.main?.feels_like)}°
           </span>
         </div>
       ) : (
-        <div className="lg:flex md:hidden sm:hidden flex md:flex w-fit items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 m-3 mr-0">
+        <div className="lg:flex md:hidden sm:hidden flex md:flex w-fit items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 gap-0.5 m-3 mr-0">
           {getWeatherIcon(weatherData?.weather[0]?.icon)}
           <span className="text-[17px]  text-light-grey-second">
             {Math.trunc(weatherData?.main?.feels_like)}°

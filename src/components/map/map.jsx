@@ -15,19 +15,18 @@ import {
 } from "@headlessui/react";
 import MapContol from "./mapContol";
 import {
-  AppIcon,
   Bed,
   Car,
   Check,
   Close,
   CloseCircle,
-  Cloud,
   Fork,
   Globe,
   Layer,
   Loader,
   Location,
   LocationDenied,
+  LocationFill,
   Logo,
   MapIcon,
   Minus,
@@ -142,6 +141,7 @@ const Map = () => {
 
   const [locationName, setLocationName] = useState("");
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
+  const [isCenterChanged, setIsCenterChanged] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenLocationModal, setIsOpenLocationModal] = useState(true);
   const [isOpenSearchPanel, setIsOpenSearchPanel] = useState(false);
@@ -298,7 +298,7 @@ const Map = () => {
     if (position) {
       return (
         <OverlayView mapPaneName={OverlayView.OVERLAY_LAYER} position={center}>
-          <span className="inline-flex rounded-full h-6 w-6 bg-dark-blue rounded-full border-4 border-white"></span>
+          <span className="inline-flex h-6 w-6 bg-dark-blue rounded-full border-4 border-white shadow-xl"></span>
         </OverlayView>
       );
     }
@@ -319,7 +319,12 @@ const Map = () => {
   };
 
   const openLocationModal = () => {
-    setIsOpenLocationModal(true);
+    if (position) {
+      setIsOpenLocationModal(false);
+      handleLocation();
+    } else {
+      setIsOpenLocationModal(true);
+    }
   };
 
   const closeLocationModal = () => {
@@ -393,6 +398,25 @@ const Map = () => {
     }
   });
 
+  const handleCenterChange = () => {
+    if (mapRef.current) {
+      const mapCenter = mapRef.current.getCenter();
+
+      if (position) {
+        if (center.lat !== mapCenter.lat() || center.lng !== mapCenter.lng()) {
+          setIsCenterChanged(true);
+        } else {
+          setPosition(true);
+          setIsCenterChanged(false);
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    handleCenterChange();
+  });
+
   return (
     <>
       {!isLoaded ? (
@@ -402,6 +426,7 @@ const Map = () => {
           onLoad={(map) => {
             mapRef.current = map;
           }}
+          onCenterChanged={handleCenterChange}
           mapContainerClassName="map"
           mapContainerStyle={containerStyle}
           options={{
@@ -438,7 +463,15 @@ const Map = () => {
                 onClick={openModal}
               />
               <IconButton
-                icon={position ? <Location /> : <LocationDenied />}
+                icon={
+                  isCenterChanged ? (
+                    <Location />
+                  ) : position ? (
+                    <LocationFill />
+                  ) : (
+                    <LocationDenied />
+                  )
+                }
                 onClick={openLocationModal}
               />
             </div>
@@ -457,7 +490,7 @@ const Map = () => {
               leaveTo="translate-y-full opacity-0"
             >
               <div className="lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4">
-                {!isOpenSearchPanel && position && (
+                {!isOpenSearchPanel && position && !isCenterChanged && (
                   <Weather
                     isMobile
                     latitude={center.lat}
@@ -813,7 +846,13 @@ const Map = () => {
 
               <div className="flex items-center gap-8">
                 <button onClick={openLocationModal}>
-                  {position ? <Location /> : <LocationDenied />}
+                  {isCenterChanged ? (
+                    <Location />
+                  ) : position ? (
+                    <LocationFill />
+                  ) : (
+                    <LocationDenied />
+                  )}
                 </button>
 
                 <Listbox
@@ -1055,7 +1094,7 @@ const Map = () => {
           </MapContol>
 
           <MapContol position={google.maps.ControlPosition.LEFT_BOTTOM}>
-            {position && (
+            {position && !isCenterChanged && (
               <Weather
                 latitude={center.lat}
                 longitude={center.lng}

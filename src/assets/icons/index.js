@@ -15,6 +15,7 @@ import { default as List } from "./List";
 import { default as Loader } from "./Loader";
 import { default as Location } from "./Location";
 import { default as LocationDenied } from "./LocationDenied";
+import { default as LocationFill } from "./LocationFill";
 import { default as Logo } from "./Logo";
 import { default as MapIcon } from "./MapIcon";
 import { default as Minus } from "./Minus";
@@ -55,6 +56,7 @@ export {
   Loader,
   Location,
   LocationDenied,
+  LocationFill,
   Logo,
   MapIcon,
   Minus,
