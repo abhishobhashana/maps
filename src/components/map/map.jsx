@@ -162,32 +162,30 @@ const Map = () => {
   };
 
   const debounceSearch = debounce(async (value) => {
-    try {
-      const response = await fetch(
-        "https://jsonplaceholder.typicode.com/users",
-        {
-          method: "GET",
-        }
-      );
+    if (value.length) {
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?&addressdetails=1&q=${value}&format=json&limit=10`,
+          {
+            method: "GET",
+          }
+        );
 
-      if (response.ok) {
-        const data = await response.json();
-        const places = data.filter((user) => {
-          return (
-            value &&
-            user &&
-            user.name &&
-            user.name.toLowerCase().includes(value.toLowerCase())
+        if (response.ok) {
+          const data = await response.json();
+          const filteredData = data?.filter(
+            (place) => place?.name?.toLowerCase() === value.toLowerCase()
           );
-        });
-        setSearchResult(places);
-      } else {
-        console.warn(response.statusText);
+          setSearchResult(filteredData);
+          console.log(filteredData);
+        } else {
+          console.warn(response.statusText);
+        }
+      } catch (e) {
+        console.warn("error found", e);
       }
-    } catch (e) {
-      console.warn("error found", e);
     }
-  }, 1000);
+  }, 500);
 
   useEffect(() => {
     debounceSearch(searchValue);
@@ -727,7 +725,7 @@ const Map = () => {
                   <div
                     className={`${
                       openSideMenu ? "mr-6" : "m-0"
-                    } h-[91rem] w-full mt-[87rem] flex flex-col gap-4 p-6 bg-light-white dark:bg-secondary text-white shadow-md border-r-2 border-seperator dark:border-dark-seperator`}
+                    } h-[91rem] w-[100%] min-w-[23.1rem] max-w-[23.1rem] mt-[87rem] flex flex-col gap-4 p-6 bg-light-white dark:bg-secondary text-white shadow-md border-r-2 border-seperator dark:border-dark-seperator`}
                   >
                     <span
                       className="w-fit cursor-pointer"
@@ -736,7 +734,7 @@ const Map = () => {
                       <Close />
                     </span>
 
-                    <div className="grid w-80 relative items-center">
+                    <div className="grid w-full relative items-center">
                       <span className="absolute ml-2 pointer-events-none">
                         <Search />
                       </span>
@@ -744,7 +742,10 @@ const Map = () => {
                       {searchValue.length ? (
                         <span
                           className="absolute right-2 cursor-pointer"
-                          onClick={() => setSearchValue("")}
+                          onClick={() => {
+                            setSearchValue("");
+                            setSearchResult([]);
+                          }}
                         >
                           <CloseCircle input />
                         </span>
@@ -762,23 +763,40 @@ const Map = () => {
                       />
                     </div>
 
-                    {searchResult.slice(0, 8).map((place, index) => {
-                      return (
-                        <div key={index} className="min-h-screen py-4">
-                          <span
-                            key={index}
-                            className="bg-light-grey text-light-grey-third dark:text-light-grey-second text-base cursor-pointer p-4 rounded-lg"
-                            onClick={() => onSearchChange(place.name)}
-                          >
-                            {place.name}
-                          </span>
-                        </div>
-                      );
-                    })}
+                    {searchValue.length ? (
+                      <div>
+                        {searchResult?.map((place, index) => {
+                          return (
+                            <div
+                              key={index}
+                              className="w-full border-b last:border-none border-seperator dark:border-dark-seperator"
+                            >
+                              <span
+                                className="flex items-center cursor-pointer "
+                                onClick={() => onSearchChange(place?.name)}
+                              >
+                                <div>
+                                  <Pump />
+                                </div>
+                                <div className="flex flex-col p-2">
+                                  <span className="text-[17px] tracking-tight text-secondary dark:text-white">
+                                    {place?.name}
+                                  </span>
+                                  <span className="flex text-sm tracking-tight text-secondary dark:text-light-grey-second">
+                                    {place?.address?.state}&#44;&nbsp;
+                                    {place?.address?.country}
+                                  </span>
+                                </div>
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
 
                     {!searchValue.length ? (
                       <div className="flex flex-col gap-5">
-                        <div className="flex flex-col">
+                        {/* <div className="flex flex-col">
                           <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second border-b-2 border-seperator dark:border-dark-seperator">
                             {data.recents}
                           </span>
@@ -794,7 +812,7 @@ const Map = () => {
                               Ahmedabad
                             </span>
                           </div>
-                        </div>
+                        </div> */}
 
                         <div className="flex flex-col">
                           <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight border-b-2 border-seperator dark:border-dark-seperator text-light-grey-third dark:text-light-grey-second">
@@ -909,10 +927,6 @@ const Map = () => {
                 >
                   3D
                 </span> */}
-
-                {/* <button onClick={openDirectionModal}>
-                  <Routes />
-                </button> */}
 
                 <Popover className="relative mt-0.5">
                   {({ open }) => (

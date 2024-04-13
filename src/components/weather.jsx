@@ -22,16 +22,16 @@ const Weather = ({ isMobile, latitude, longitude, setName }) => {
         return <Night />;
       case "02d":
       case "02n":
-        return <Cloud />;
+        return <CloudSun />;
       case "03d":
       case "03n":
-        return <CloudSun />;
+        return <Cloud />;
       case "04d":
       case "04n":
-        return <Cloud />
+        return <Cloud />;
       case "09d":
       case "09n":
-        return <Rain />
+        return <Rain />;
       case "10d":
       case "10n":
         return <RainHeavy />;
@@ -42,6 +42,7 @@ const Weather = ({ isMobile, latitude, longitude, setName }) => {
       case "13n":
         return <Snow />;
       case "50d":
+        return <Cloud />;
       case "50n":
         return <Night />;
       default:
@@ -57,7 +58,7 @@ const Weather = ({ isMobile, latitude, longitude, setName }) => {
         );
         const data = await response.json();
         setWeatherData(data);
-        setName(data?.name)
+        setName(data?.name);
       } catch (error) {
         console.error("Error fetching weather data:", error);
       }
@@ -71,15 +72,15 @@ const Weather = ({ isMobile, latitude, longitude, setName }) => {
       {isMobile ? (
         <div className="absolute bottom-[15.5rem] right-2.5 flex items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 gap-0.5">
           {getWeatherIcon(weatherData?.weather[0]?.icon)}
-          <span className="text-[17px]  text-light-grey-second">
-            {Math.trunc(weatherData?.main?.feels_like)}°
+          <span className="text-[17px] text-light-grey-second">
+            {Math.trunc(weatherData?.main?.temp)}°
           </span>
         </div>
       ) : (
         <div className="lg:flex md:hidden sm:hidden flex md:flex w-fit items-center bg-light-white dark:bg-secondary shadow-md rounded-xl p-2 gap-0.5 m-3 mr-0">
           {getWeatherIcon(weatherData?.weather[0]?.icon)}
-          <span className="text-[17px]  text-light-grey-second">
-            {Math.trunc(weatherData?.main?.feels_like)}°
+          <span className="text-[17px] text-light-grey-second">
+            {Math.trunc(weatherData?.main?.temp)}°
           </span>
         </div>
       )}
