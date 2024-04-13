@@ -3,7 +3,7 @@ import React from "react";
 export default function Minus() {
   return (
     <svg
-      width="17"
+      width="14"
       height="3"
       viewBox="0 0 20 3"
       fill="none"

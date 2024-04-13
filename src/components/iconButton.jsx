@@ -9,8 +9,8 @@ const IconButton = ({ className, small, disableVal, icon, onClick }) => {
       onClick={onClick}
     >
       <span
-        className={`flex h-5 ${
-          small ? "w-auto" : "w-5"
+        className={`flex ${
+          small ? "w-auto" : "w-5 h-5"
         } items-center justify-center`}
       >
         {icon}
