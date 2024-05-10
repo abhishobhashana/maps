@@ -50,3 +50,8 @@ a[href^="https://maps.google.com/maps"]
 .gm-style iframe + div {
   border: none !important;
 }
+
+.leaflet-pane,
+.leaflet-bottom {
+  z-index: 0 !important;
+}
