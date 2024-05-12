@@ -304,13 +304,13 @@ const Maps = () => {
             offset={[220, 150]}
             closeButton={false}
           >
-            <div className="flex flex-col gap-5 font-sans">
+            <div className="w-full flex flex-col gap-5 font-sans">
               <div className="flex gap-2.5 items-start justify-between">
                 <div className="flex flex-col">
-                  <span className="leading-5 text-lg font-sansMedium text-secondary dark:text-white">
+                  <span className="font-displayMedium text-xl text-secondary dark:text-white">
                     {data.myLocation}
                   </span>
-                  <span className="leading-5 text-sm text-light-grey-third dark:text-light-grey-second">
+                  <span className="text-base text-light-grey-third dark:text-light-grey-second">
                     {locationDetails.name}
                   </span>
                 </div>
@@ -322,12 +322,12 @@ const Maps = () => {
                 </span>
               </div>
               <div className="flex flex-col gap-2.5 items-start">
-                <span className="leading-5 text-base font-sansMedium text-secondary dark:text-white">
+                <span className="text-base font-sansMedium text-secondary dark:text-white">
                   {data.details}
                 </span>
-                <div className="flex bg-white dark:bg-secondary rounded-lg p-2.5 gap-5">
-                  <div className="flex flex-col gap-2.5 bg-white dark:bg-[#414141] rounded-lg">
-                    <div className="flex flex-col">
+                <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-lg  gap-2.5">
+                  <div className="p-4 pb-0 w-full flex gap-5">
+                    <div className="w-full flex flex-col">
                       <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
                         {data.address}
                       </span>
@@ -336,18 +336,20 @@ const Maps = () => {
                       </span>
                     </div>
 
-                    <div className="flex flex-col font-sans">
-                      <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
-                        {data.coords}
-                      </span>
-                      <span className="text-sm text-secondary dark:text-white">
-                        {locationDetails.lat}&#44;&nbsp;{locationDetails.lng}
-                      </span>
-                    </div>
+                    <span className="w-fit cursor-pointer">
+                      <Routes />
+                    </span>
                   </div>
-                  <span className="w-fit cursor-pointer">
-                    <Routes />
-                  </span>
+                  <span className="ml-4 border border-seperator dark:border-dark-seperator" />
+                  <div className="p-4 pt-0 flex flex-col font-sans">
+                    <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                      {data.coords}
+                    </span>
+                    <span className="text-sm text-secondary dark:text-white">
+                      {locationDetails.lat}&#44;&nbsp;
+                      {locationDetails.lng}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -356,7 +358,7 @@ const Maps = () => {
           <Transition appear show={openLocationModal} as={Fragment}>
             <Dialog
               as="div"
-              className="hidden sm:flex relative z-10"
+              className="lg:hidden sm:flex relative z-10"
               onClose={() => setOpenLocationModal(false)}
             >
               <Transition.Child
@@ -389,7 +391,7 @@ const Maps = () => {
                         <div className="w-full flex flex-col gap-5 font-sans">
                           <div className="flex gap-2.5 items-start justify-between">
                             <div className="flex flex-col">
-                              <span className="text-xl font-sansMedium text-secondary dark:text-white">
+                              <span className="font-displayMedium text-2xl text-secondary dark:text-white">
                                 {data.myLocation}
                               </span>
                               <span className="text-lg text-light-grey-third dark:text-light-grey-second">
@@ -404,11 +406,11 @@ const Maps = () => {
                             </span>
                           </div>
                           <div className="flex flex-col gap-2.5 items-start">
-                            <span className="text-base font-sansMedium text-secondary dark:text-white">
+                            <span className="text-lg font-sansMedium text-secondary dark:text-white">
                               {data.details}
                             </span>
-                            <div className="w-full flex flex-col bg-white dark:bg-secondary rounded-lg p-2.5 gap-2.5">
-                              <div className="w-full flex gap-5 bg-white dark:bg-[#414141] rounded-lg">
+                            <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-lg  gap-2.5">
+                              <div className="p-4 pb-0 w-full flex gap-5">
                                 <div className="w-full flex flex-col">
                                   <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
                                     {data.address}
@@ -422,8 +424,8 @@ const Maps = () => {
                                   <Routes />
                                 </span>
                               </div>
-
-                              <div className="flex flex-col font-sans">
+                              <span className="ml-4 border border-seperator dark:border-dark-seperator" />
+                              <div className="p-4 pt-0 flex flex-col font-sans">
                                 <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
                                   {data.coords}
                                 </span>
