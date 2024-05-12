@@ -1,11 +1,13 @@
 import React from "react";
 import { UseModeChecker } from "../../useModeChecker";
 
-export default function Loader() {
+export default function Loader({ className }) {
   const mode = UseModeChecker();
 
   return (
-    <div className="h-screen w-full flex items-center justify-center">
+    <div
+      className={`${className} h-screen w-full flex items-center justify-center`}
+    >
       <svg
         className="animate-spin-slow"
         width="30"
@@ -23,4 +25,4 @@ export default function Loader() {
       </svg>
     </div>
   );
-};
+}

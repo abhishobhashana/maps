@@ -55,3 +55,17 @@ a[href^="https://maps.google.com/maps"]
 .leaflet-bottom {
   z-index: 0 !important;
 }
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+.leaflet-popup-content {
+  width: auto !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

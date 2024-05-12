@@ -3,6 +3,7 @@ import {
   AttributionControl,
   MapContainer,
   Marker,
+  Popup,
   TileLayer,
   useMapEvents,
 } from "react-leaflet";
@@ -21,6 +22,7 @@ import {
   CloseCircle,
   Globe,
   Layer,
+  Loader,
   Location,
   LocationDenied,
   LocationFill,
@@ -42,6 +44,7 @@ import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
 import Transit from "../../assets/icons/Transit.png";
 import TransitDark from "../../assets/icons/Transit-dark.jpeg";
 import Satellite from "../../assets/images/Satellite.png";
+import MarkerIcon from "../../assets/icons/marker.png";
 
 const Maps = () => {
   const mode = UseModeChecker();
@@ -83,12 +86,19 @@ const Maps = () => {
 
   const mapRef = useRef();
   const [center, setCenter] = useState({ lat: 21.5222, lng: 70.4579 });
+  const [locationDetails, setLocationDetails] = useState({
+    lat: 0,
+    lng: 0,
+    name: "",
+    address: "",
+  });
   const [zoom, setZoom] = useState(7);
+  const [loading, setLoading] = useState(false);
   const [mapType, setMapType] = useState("");
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
-  const [locationName, setLocationName] = useState("");
   const [position, setPosition] = useState(false);
   const [isCenterChanged, setIsCenterChanged] = useState(false);
+  const [openLocationModal, setOpenLocationModal] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
   const [selected, setSelected] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -116,6 +126,13 @@ const Maps = () => {
     },
   ];
 
+  const customIcon = L.icon({
+    iconUrl: MarkerIcon,
+    iconSize: [42, 42],
+    iconAnchor: [20, 42],
+    popupAnchor: [0, -32],
+  });
+
   const debounce = (func, delay) => {
     let timer;
     return function (...args) {
@@ -140,7 +157,6 @@ const Maps = () => {
             (place) => place?.name?.toLowerCase() === value.toLowerCase()
           );
           setSearchResult(filteredData);
-          console.log(filteredData);
         } else {
           console.warn(response.statusText);
         }
@@ -185,106 +201,73 @@ const Maps = () => {
     }
   };
 
-  // const handleLocation = () => {
-  //   if ("geolocation" in navigator) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       function (position) {
-  //         const pos = {
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         };
-  //         setCenter(pos);
-  //         setPosition(true);
-  //         setZoom(18);
-  //       },
-  //       function (error) {
-  //         switch (error.code) {
-  //           case error.PERMISSION_DENIED:
-  //             setPosition(false);
-  //             setCenter({ lat: 21.5222, lng: 70.4579 });
-  //             break;
+  const getLocationDetails = async (lat, lng) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&limit=10`,
+        {
+          method: "GET",
+        }
+      );
 
-  //           default:
-  //             break;
-  //         }
-  //       }
-  //     );
-  //   }
-  // };
-
-  // const openLocationModal = () => {
-  //   // if (position) {
-  //   handleLocation();
-  //   // } else {
-  //   // }
-  // };
-
-  // useEffect(() => {
-  //   if (mapRef.current && position) {
-  //     const mapCenter = mapRef.current.getCenter();
-  //     if (position) {
-  //       if (center.lat !== mapCenter.lat || center.lng !== mapCenter.lng) {
-  //         setIsCenterChanged(true);
-  //       } else {
-  //         setPosition(true);
-  //         setIsCenterChanged(false);
-  //       }
-  //     }
-  //   }
-  // });
-
-  // const [permissionRequested, setPermissionRequested] = useState(false);
-
-  // useEffect(() => {
-  //   if (!permissionRequested) {
-  //     askForLocationPermission();
-  //   }
-  // }, [permissionRequested]);
-
-  // const askForLocationPermission = () => {
-  //   if ("geolocation" in navigator) {
-  //     navigator.permissions
-  //       .query({ name: "geolocation" })
-  //       .then((permissionStatus) => {
-  //         if (permissionStatus.state === "granted") {
-  //           getCurrentLocation();
-  //         } else {
-  //           setPermissionRequested(false); // Mark permission as requested
-  //         }
-  //       });
-  //   } else {
-  //     console.log("Geolocation is not supported by this browser.");
-  //   }
-  // };
-
-  // const getCurrentLocation = () => {
-  //   if ("geolocation" in navigator) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         setPosition([position.coords.latitude, position.coords.longitude]);
-  //       },
-  //       (error) => {
-  //         console.error("Error getting user location:", error);
-  //       }
-  //     );
-  //   } else {
-  //     console.log("Geolocation is not supported by this browser.");
-  //   }
-  // };
-  const [positions, setPositions] = useState(null);
-  const MyComponent = () => {
-    const mapsref = useMapEvents({
-      click: () => {
-        mapsref.locate();
-      },
-      locationfound: (location) => {
-        setPositions(location.latlng);
-        mapsref.flyTo(location.latlng, 18);
-        console.log("location found:", location.latlng);
-      },
-    });
-    return positions === null ? null : <Marker position={positions} />;
+      if (response.ok) {
+        const data = await response.json();
+        setLoading(false);
+        setLocationDetails({
+          lat: data?.lat,
+          lng: data?.lon,
+          name: data?.address?.suburb,
+          address: data?.display_name,
+        });
+      } else {
+        console.warn(response.statusText);
+      }
+    } catch (e) {
+      console.warn("error found", e);
+    }
   };
+
+  const handleLocation = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          };
+          setCenter(pos);
+          setPosition(true);
+          setZoom(18);
+          mapRef.current.flyTo(pos, 18);
+          getLocationDetails(pos.lat, pos.lng);
+        },
+        function (error) {
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              setPosition(false);
+              const pos = {
+                lat: 21.5222,
+                lng: 70.4579,
+              };
+              setCenter(pos);
+              setLocationDetails(pos);
+              mapRef.current.flyTo(pos, 7);
+              break;
+
+            default:
+              break;
+          }
+        }
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (!position) {
+      handleLocation();
+    }
+  }, [position]);
 
   return (
     <MapContainer
@@ -309,7 +292,158 @@ const Maps = () => {
         prefix='<a href="https://leafletjs.com/">Leaflet</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       />
       <CustomZoom mode={mode} />
-      <MyComponent />
+
+      {position ? (
+        <Marker
+          position={center}
+          icon={customIcon}
+          eventHandlers={{ click: () => setOpenLocationModal(true) }}
+        >
+          <Popup
+            className="relative hidden lg:flex w-fit p-4 bg-light-white dark:bg-secondary rounded-xl shadow-2xl border border-seperator dark:border-dark-seperator"
+            offset={[220, 150]}
+            closeButton={false}
+          >
+            <div className="flex flex-col gap-5 font-sans">
+              <div className="flex gap-2.5 items-start justify-between">
+                <div className="flex flex-col">
+                  <span className="leading-5 text-lg font-sansMedium text-secondary dark:text-white">
+                    {data.myLocation}
+                  </span>
+                  <span className="leading-5 text-sm text-light-grey-third dark:text-light-grey-second">
+                    {locationDetails.name}
+                  </span>
+                </div>
+                <span
+                  className="w-fit cursor-pointer"
+                  onClick={() => mapRef.current.closePopup()}
+                >
+                  <CloseCircle popup />
+                </span>
+              </div>
+              <div className="flex flex-col gap-2.5 items-start">
+                <span className="leading-5 text-base font-sansMedium text-secondary dark:text-white">
+                  {data.details}
+                </span>
+                <div className="flex bg-white dark:bg-secondary rounded-lg p-2.5 gap-5">
+                  <div className="flex flex-col gap-2.5 bg-white dark:bg-[#414141] rounded-lg">
+                    <div className="flex flex-col">
+                      <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                        {data.address}
+                      </span>
+                      <span className="text-sm text-secondary dark:text-white">
+                        {locationDetails.address}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col font-sans">
+                      <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                        {data.coords}
+                      </span>
+                      <span className="text-sm text-secondary dark:text-white">
+                        {locationDetails.lat}&#44;&nbsp;{locationDetails.lng}
+                      </span>
+                    </div>
+                  </div>
+                  <span className="w-fit cursor-pointer">
+                    <Routes />
+                  </span>
+                </div>
+              </div>
+            </div>
+          </Popup>
+
+          <Transition appear show={openLocationModal} as={Fragment}>
+            <Dialog
+              as="div"
+              className="hidden sm:flex relative z-10"
+              onClose={() => setOpenLocationModal(false)}
+            >
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-100"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-100"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0" />
+              </Transition.Child>
+
+              <Transition.Child
+                as={Fragment}
+                enter="transform transition ease-in-out duration-300"
+                enterFrom="translate-y-full opacity-0"
+                enterTo="translate-y-0 opacity-100"
+                leave="transform transition ease-in-out duration-150"
+                leaveFrom="translate-y-0 opacity-100"
+                leaveTo="translate-y-full opacity-0"
+              >
+                <div className="fixed bottom-0 w-full flex flex-col bg-light-white dark:bg-primary shadow-md rounded-t-2xl">
+                  <div className="flex min-h-full items-center justify-center text-center">
+                    <Dialog.Panel className="w-full max-w-md flex flex-col transform overflow-hidden rounded-t-2xl bg-light-white dark:bg-secondary p-4 pb-6 gap-4 text-left align-middle shadow-xl transition-all">
+                      {loading ? (
+                        <Loader className="max-h-56" />
+                      ) : (
+                        <div className="w-full flex flex-col gap-5 font-sans">
+                          <div className="flex gap-2.5 items-start justify-between">
+                            <div className="flex flex-col">
+                              <span className="text-xl font-sansMedium text-secondary dark:text-white">
+                                {data.myLocation}
+                              </span>
+                              <span className="text-lg text-light-grey-third dark:text-light-grey-second">
+                                {locationDetails.name}
+                              </span>
+                            </div>
+                            <span
+                              className="w-fit cursor-pointer"
+                              onClick={() => setOpenLocationModal(false)}
+                            >
+                              <CloseCircle />
+                            </span>
+                          </div>
+                          <div className="flex flex-col gap-2.5 items-start">
+                            <span className="text-base font-sansMedium text-secondary dark:text-white">
+                              {data.details}
+                            </span>
+                            <div className="w-full flex flex-col bg-white dark:bg-secondary rounded-lg p-2.5 gap-2.5">
+                              <div className="w-full flex gap-5 bg-white dark:bg-[#414141] rounded-lg">
+                                <div className="w-full flex flex-col">
+                                  <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                                    {data.address}
+                                  </span>
+                                  <span className="text-base text-secondary dark:text-white">
+                                    {locationDetails.address}
+                                  </span>
+                                </div>
+
+                                <span className="w-fit cursor-pointer">
+                                  <Routes />
+                                </span>
+                              </div>
+
+                              <div className="flex flex-col font-sans">
+                                <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                                  {data.coords}
+                                </span>
+                                <span className="text-base text-secondary dark:text-white">
+                                  {locationDetails.lat}&#44;&nbsp;
+                                  {locationDetails.lng}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </Dialog.Panel>
+                  </div>
+                </div>
+              </Transition.Child>
+            </Dialog>
+          </Transition>
+        </Marker>
+      ) : null}
 
       <div className="relative hidden lg:flex h-12 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator items-center justify-between first:p-0 first:pr-6 pr-6 py-3.5">
         <div className="flex items-center">
@@ -423,26 +557,6 @@ const Maps = () => {
                       </span>
                     </div>
                   </div>
-
-                  {/* <div className="flex flex-col">
-                    <span className="p-0 pb-2.5 text-base font-sansMedium tracking-tight border-b-2 border-seperator dark:border-dark-seperator text-light-grey-third dark:text-light-grey-second">
-                      {data.nearBy}
-                    </span>
-                    {nearbyValues.map((items, index) => {
-                      return (
-                        <div
-                          className="flex items-center cursor-pointer border-b last:border-none border-seperator dark:border-dark-seperator"
-                          key={index}
-                          onClick={(e) => handleFindNearbyClick(e, items.name)}
-                        >
-                          {items.icon}
-                          <span className="p-2.5 text-base tracking-tight text-secondary dark:text-white">
-                            {items.name}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div> */}
                 </div>
               ) : null}
 
@@ -467,14 +581,12 @@ const Maps = () => {
           </span>
 
           <span className="font-sansMedium text-lg tracking-tighter text-secondary dark:text-light-white pr-6">
-            {locationName ? locationName : data.app}
+            {position ? locationDetails.name : data.app}
           </span>
         </div>
 
-        <div className="flex items-center gap-8">
-          <button
-          // onClick={}
-          >
+        <div className="flex items-center gap-6">
+          <button onClick={handleLocation}>
             {isCenterChanged ? (
               <Location />
             ) : position ? (
@@ -591,28 +703,24 @@ const Maps = () => {
       </div>
 
       <div className="absolute top-2.5 right-2.5 hidden sm:flex lg:hidden md:hidden w-fit flex-col items-center gap-2.5">
-        {/* <IconButton
-          className="border-b border-seperator/10 dark:border-dark-seperator focus-visible:outline-none"
-          icon={mapTypeIcon.icon}
-          onClick={() => setIsOpenSearchModal(true)}
-        /> */}
-
         <div className="flex flex-col bg-light-white dark:bg-secondary shadow-md rounded-xl">
           <IconButton
             className="!p-3 border-b border-seperator/10 dark:border-dark-seperator focus-visible:outline-none"
             icon={mapTypeIcon.icon}
             onClick={() => setIsOpenSearchModal(true)}
           />
-          {/* <button
-            className="border-b border-seperator/10 dark:border-dark-seperator focus-visible:outline-none p-2"
-            onClick={() => setIsOpenSearchModal(true)}
-          >
-            {mapTypeIcon.icon}
-          </button> */}
-
           <IconButton
-            className="!p-3 focus-visible:outline-none"
-            icon={<Location />}
+            className="!p-3"
+            icon={
+              isCenterChanged ? (
+                <Location />
+              ) : position ? (
+                <LocationFill />
+              ) : (
+                <LocationDenied />
+              )
+            }
+            onClick={handleLocation}
           />
         </div>
 
@@ -620,7 +728,7 @@ const Maps = () => {
           <Listbox as="div" by="id" value={selected} onChange={setSelected}>
             {({ open }) => (
               <div className="relative">
-                <Listbox.Button className="map-btn relative w-fit rounded-xl cursor-ponter p-2.5 shadow-md focus-visible:outline-none">
+                <Listbox.Button className="map-btn relative w-fit rounded-xl cursor-ponter p-2.5 focus-visible:outline-none">
                   <Layer />
                 </Listbox.Button>
                 <Transition
@@ -664,18 +772,6 @@ const Maps = () => {
             )}
           </Listbox>
         </div>
-        <IconButton
-          icon={
-            isCenterChanged ? (
-              <Location />
-            ) : position ? (
-              <LocationFill />
-            ) : (
-              <LocationDenied />
-            )
-          }
-          // onClick={}
-        />
       </div>
 
       <Transition appear show={isOpenSearchModal} as={Fragment}>
