@@ -5,18 +5,12 @@ import {
   Marker,
   Popup,
   TileLayer,
-  useMapEvents,
 } from "react-leaflet";
 import CustomZoom from "../CustomZoom";
 import { UseModeChecker } from "../../useModeChecker";
+import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import {
-  Dialog,
-  Listbox,
-  Popover,
-  RadioGroup,
-  Transition,
-} from "@headlessui/react";
-import {
+  Bus,
   Check,
   Close,
   CloseCircle,
@@ -29,22 +23,26 @@ import {
   Logo,
   MapIcon,
   Pin,
-  Pump,
+  PinCircle,
+  RouteModal,
   Routes,
   Search,
+  SearchCircle,
   Sidemenu,
+  Train,
 } from "../../assets/icons";
 import data from "../../data/data.json";
 import "leaflet/dist/leaflet.css";
 import IconButton from "../iconButton";
 import Explore from "../../assets/images/Explore.png";
 import ExploreDark from "../../assets/images/Explore-dark.png";
-import Driving from "../../assets/icons/Driving.png";
-import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
-import Transit from "../../assets/icons/Transit.png";
-import TransitDark from "../../assets/icons/Transit-dark.jpeg";
 import Satellite from "../../assets/images/Satellite.png";
-import MarkerIcon from "../../assets/icons/marker.png";
+import LocationMarker from "../../assets/images/LocationMarker.png";
+import LocationCircle from "../../assets/images/LocationCircle.png";
+// import Driving from "../../assets/icons/Driving.png";
+// import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
+// import Transit from "../../assets/icons/Transit.png";
+// import TransitDark from "../../assets/icons/Transit-dark.jpeg";
 
 const Maps = () => {
   const mode = UseModeChecker();
@@ -91,13 +89,17 @@ const Maps = () => {
     lng: 0,
     name: "",
     address: "",
+    country: "",
   });
   const [zoom, setZoom] = useState(7);
   const [loading, setLoading] = useState(false);
   const [mapType, setMapType] = useState("");
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [position, setPosition] = useState(false);
+  const [searchedPosition, setSearchedPosition] = useState(false);
   const [isCenterChanged, setIsCenterChanged] = useState(false);
+  const [isOpenSearchPanel, setIsOpenSearchPanel] = useState(true);
+  const [showCancel, setShowCancel] = useState(false);
   const [openLocationModal, setOpenLocationModal] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
   const [selected, setSelected] = useState("");
@@ -126,10 +128,17 @@ const Maps = () => {
     },
   ];
 
-  const customIcon = L.icon({
-    iconUrl: MarkerIcon,
-    iconSize: [42, 42],
-    iconAnchor: [20, 42],
+  const locationIndicatorIcon = L.icon({
+    iconUrl: LocationCircle,
+    iconSize: [25, 25],
+    iconAnchor: [20, 20],
+    popupAnchor: [0, -32],
+  });
+
+  const locationMarkerIcon = L.icon({
+    iconUrl: LocationMarker,
+    iconSize: [40, 50],
+    iconAnchor: [20, 50],
     popupAnchor: [0, -32],
   });
 
@@ -143,9 +152,10 @@ const Maps = () => {
 
   const debounceSearch = debounce(async (value) => {
     if (value.length) {
+      setLoading(true);
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?&addressdetails=1&q=${value}&format=json&limit=10`,
+          `https://nominatim.openstreetmap.org/search?&addressdetails=1&q=${value}&format=json&limit=9`,
           {
             method: "GET",
           }
@@ -153,10 +163,11 @@ const Maps = () => {
 
         if (response.ok) {
           const data = await response.json();
-          const filteredData = data?.filter(
-            (place) => place?.name?.toLowerCase() === value.toLowerCase()
+          const filteredData = data?.filter((place) =>
+            place?.name?.toLowerCase().includes(value.toLowerCase())
           );
           setSearchResult(filteredData);
+          setLoading(false);
         } else {
           console.warn(response.statusText);
         }
@@ -164,7 +175,29 @@ const Maps = () => {
         console.warn("error found", e);
       }
     }
-  }, 500);
+  }, 300);
+
+  const getSearchedResultsTypeIcon = (type) => {
+    switch (type) {
+      case "city":
+      case "centre":
+      case "hamlet":
+      case "police":
+      case "ruins":
+        return <PinCircle />;
+
+      case "bus_station":
+        return <Bus />;
+
+      case "stop":
+      case "station":
+      case "train_station":
+        return <Train />;
+
+      default:
+        return <SearchCircle />;
+    }
+  };
 
   useEffect(() => {
     debounceSearch(searchValue);
@@ -199,6 +232,26 @@ const Maps = () => {
     } else {
       debounceSearch(null);
     }
+  };
+
+  const handleSelectedItembyClick = (place) => {
+    const pos = {
+      lat: Number(place?.lat),
+      lng: Number(place?.lon),
+    };
+    setCenter(pos);
+    setPosition(false);
+    setSearchedPosition(true);
+    setOpenLocationModal(true);
+    setIsOpenSearchPanel(false);
+    mapRef.current.flyTo(pos, 10);
+    setLocationDetails({
+      name: place?.name,
+      country: place?.address?.country,
+      address: place?.display_name,
+      lat: place?.lat,
+      lng: place?.lon,
+    });
   };
 
   const getLocationDetails = async (lat, lng) => {
@@ -264,10 +317,10 @@ const Maps = () => {
   };
 
   useEffect(() => {
-    if (!position) {
+    if (!position && !searchedPosition) {
       handleLocation();
     }
-  }, [position]);
+  }, [position, searchedPosition]);
 
   return (
     <MapContainer
@@ -293,25 +346,35 @@ const Maps = () => {
       />
       <CustomZoom mode={mode} />
 
-      {position ? (
+      {position || searchedPosition ? (
         <Marker
           position={center}
-          icon={customIcon}
-          eventHandlers={{ click: () => setOpenLocationModal(true) }}
+          icon={position ? locationIndicatorIcon : locationMarkerIcon}
+          eventHandlers={{
+            click: () => {
+              if (position) {
+                setOpenLocationModal(true);
+              }
+              if (searchedPosition) {
+                setSearchedPosition(true);
+                setOpenLocationModal(true);
+              }
+            },
+          }}
         >
           <Popup
-            className="relative hidden lg:flex w-fit p-4 bg-light-white dark:bg-secondary rounded-xl shadow-2xl border border-seperator dark:border-dark-seperator"
-            offset={[220, 150]}
+            className="tracking-tight relative hidden lg:flex w-fit p-4 bg-light-white dark:bg-secondary rounded-xl shadow-2xl border border-seperator dark:border-dark-seperator"
+            offset={[200, 180]}
             closeButton={false}
           >
-            <div className="w-full flex flex-col gap-5 font-sans">
+            <div className="w-full flex flex-col gap-2.5 font-sans">
               <div className="flex gap-2.5 items-start justify-between">
                 <div className="flex flex-col">
-                  <span className="font-displayMedium text-xl text-secondary dark:text-white">
-                    {data.myLocation}
+                  <span className="leading-6 font-displayMedium text-xl text-secondary dark:text-white">
+                    {position ? data.myLocation : locationDetails?.name}
                   </span>
-                  <span className="text-base text-light-grey-third dark:text-light-grey-second">
-                    {locationDetails.name}
+                  <span className="leading-6 text-base text-light-grey-third dark:text-light-grey-second">
+                    {locationDetails.country}
                   </span>
                 </div>
                 <span
@@ -325,24 +388,24 @@ const Maps = () => {
                 <span className="text-base font-sansMedium text-secondary dark:text-white">
                   {data.details}
                 </span>
-                <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-lg  gap-2.5">
+                <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-xl gap-2.5">
                   <div className="p-4 pb-0 w-full flex gap-5">
                     <div className="w-full flex flex-col">
-                      <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                      <span className="text-xs text-light-grey-third dark:text-light-grey-second">
                         {data.address}
                       </span>
-                      <span className="text-sm text-secondary dark:text-white">
+                      <span className="min-w-[12rem] w-full tracking-tight text-sm text-secondary dark:text-white">
                         {locationDetails.address}
                       </span>
                     </div>
 
                     <span className="w-fit cursor-pointer">
-                      <Routes />
+                      <RouteModal />
                     </span>
                   </div>
-                  <span className="ml-4 border border-seperator dark:border-dark-seperator" />
+                  <span className="ml-4 border border-seperator/10 dark:border-dark-seperator" />
                   <div className="p-4 pt-0 flex flex-col font-sans">
-                    <span className="text-xs font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                    <span className="text-xs text-light-grey-third dark:text-light-grey-second">
                       {data.coords}
                     </span>
                     <span className="text-sm text-secondary dark:text-white">
@@ -358,8 +421,10 @@ const Maps = () => {
           <Transition appear show={openLocationModal} as={Fragment}>
             <Dialog
               as="div"
-              className="lg:hidden sm:flex relative z-10"
-              onClose={() => setOpenLocationModal(false)}
+              className="tracking-tight lg:hidden sm:flex relative z-10"
+              onClose={() => {
+                setOpenLocationModal(false);
+              }}
             >
               <Transition.Child
                 as={Fragment}
@@ -388,19 +453,24 @@ const Maps = () => {
                       {loading ? (
                         <Loader className="max-h-56" />
                       ) : (
-                        <div className="w-full flex flex-col gap-5 font-sans">
+                        <div className="w-full flex flex-col gap-2.5 font-sans">
                           <div className="flex gap-2.5 items-start justify-between">
                             <div className="flex flex-col">
-                              <span className="font-displayMedium text-2xl text-secondary dark:text-white">
-                                {data.myLocation}
+                              <span className="leading-6 font-displayMedium text-2xl text-secondary dark:text-white">
+                                {position
+                                  ? data.myLocation
+                                  : locationDetails.name}
                               </span>
-                              <span className="text-lg text-light-grey-third dark:text-light-grey-second">
-                                {locationDetails.name}
+                              <span className="leading-6 text-lg text-light-grey-third dark:text-light-grey-second">
+                                {locationDetails.country}
                               </span>
                             </div>
                             <span
                               className="w-fit cursor-pointer"
-                              onClick={() => setOpenLocationModal(false)}
+                              onClick={() => {
+                                setOpenLocationModal(false);
+                                setIsOpenSearchPanel(true);
+                              }}
                             >
                               <CloseCircle />
                             </span>
@@ -409,10 +479,10 @@ const Maps = () => {
                             <span className="text-lg font-sansMedium text-secondary dark:text-white">
                               {data.details}
                             </span>
-                            <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-lg  gap-2.5">
+                            <div className="w-full flex flex-col bg-white dark:bg-[#414141] rounded-xl  gap-2.5">
                               <div className="p-4 pb-0 w-full flex gap-5">
                                 <div className="w-full flex flex-col">
-                                  <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                                  <span className="text-sm text-light-grey-third dark:text-light-grey-second">
                                     {data.address}
                                   </span>
                                   <span className="text-base text-secondary dark:text-white">
@@ -421,12 +491,12 @@ const Maps = () => {
                                 </div>
 
                                 <span className="w-fit cursor-pointer">
-                                  <Routes />
+                                  <RouteModal />
                                 </span>
                               </div>
-                              <span className="ml-4 border border-seperator dark:border-dark-seperator" />
+                              <span className="ml-4 border border-seperator/10 dark:border-dark-seperator" />
                               <div className="p-4 pt-0 flex flex-col font-sans">
-                                <span className="text-sm font-sansMedium text-light-grey-third dark:text-light-grey-second">
+                                <span className="text-sm text-light-grey-third dark:text-light-grey-second">
                                   {data.coords}
                                 </span>
                                 <span className="text-base text-secondary dark:text-white">
@@ -447,7 +517,7 @@ const Maps = () => {
         </Marker>
       ) : null}
 
-      <div className="relative hidden lg:flex h-12 w-screen bg-light-white dark:bg-secondary shadow-md border-b-2 border-seperator dark:border-dark-seperator items-center justify-between first:p-0 first:pr-6 pr-6 py-3.5">
+      <div className="relative hidden lg:flex h-12 w-screen bg-light-white dark:bg-secondary font-sans  shadow-md border-b-2 border-seperator dark:border-dark-seperator items-center justify-between first:p-0 first:pr-6 pr-6 py-3.5">
         <div className="flex items-center">
           {openSideMenu && (
             <div
@@ -491,7 +561,7 @@ const Maps = () => {
                 />
               </div>
 
-              {searchValue.length ? (
+              {searchValue.length && !loading ? (
                 <div>
                   {searchResult?.map((place, index) => {
                     return (
@@ -500,14 +570,12 @@ const Maps = () => {
                         className="w-full border-b last:border-none border-seperator dark:border-dark-seperator"
                       >
                         <span
-                          className="flex items-center cursor-pointer "
-                          onClick={() => onSearchChange(place?.name)}
+                          className="flex items-center cursor-pointer"
+                          onClick={() => handleSelectedItembyClick(place)}
                         >
-                          <div>
-                            <Pump />
-                          </div>
+                          <span>{getSearchedResultsTypeIcon(place.type)}</span>
                           <div className="flex flex-col p-2">
-                            <span className="text-[17px] tracking-tight text-secondary dark:text-white">
+                            <span className="text-[17px] leading-5 tracking-tight text-secondary dark:text-white">
                               {place?.name}
                             </span>
                             <span className="flex text-sm tracking-tight text-secondary dark:text-light-grey-second">
@@ -520,6 +588,8 @@ const Maps = () => {
                     );
                   })}
                 </div>
+              ) : searchValue.length && loading ? (
+                <Loader className="pb-40" />
               ) : null}
 
               {!searchValue.length ? (
@@ -562,11 +632,13 @@ const Maps = () => {
                 </div>
               ) : null}
 
-              {!searchResult
+              {searchValue.length &&
+              !searchResult
                 .map((e) => e.name)
                 .toString()
                 .toLocaleLowerCase()
-                .includes(searchValue) && searchValue.length >= 1 ? (
+                .includes(searchValue) &&
+              searchValue.length >= 1 ? (
                 <span className="min-h-screen flex items-center justify-center text-light-grey-third dark:text-light-grey-second text-base pb-40 rounded-lg">
                   {data.noResult}
                 </span>
@@ -583,13 +655,13 @@ const Maps = () => {
           </span>
 
           <span className="font-sansMedium text-lg tracking-tighter text-secondary dark:text-light-white pr-6">
-            {position ? locationDetails.name : data.app}
+            {position || searchedPosition ? locationDetails.name : data.app}
           </span>
         </div>
 
         <div className="flex items-center gap-6">
           <button onClick={handleLocation}>
-            {isCenterChanged ? (
+            {searchedPosition ? (
               <Location />
             ) : position ? (
               <LocationFill />
@@ -714,7 +786,7 @@ const Maps = () => {
           <IconButton
             className="!p-3"
             icon={
-              isCenterChanged ? (
+              searchedPosition ? (
                 <Location />
               ) : position ? (
                 <LocationFill />
@@ -775,6 +847,115 @@ const Maps = () => {
           </Listbox>
         </div>
       </div>
+
+      <Transition
+        appear
+        show={true}
+        as={Fragment}
+        enter="transform transition ease-in-out duration-200"
+        enterFrom="translate-y-full opacity-0"
+        enterTo="translate-y-0 opacity-100"
+        leave="transform transition ease-in-out duration-200"
+        leaveFrom="translate-y-0 opacity-100"
+        leaveTo="translate-y-full opacity-0"
+      >
+        <div
+          className={`${
+            showCancel && !openLocationModal ? "h-[95%]" : "h-auto"
+          } lg:hidden fixed bottom-0 w-full sm:flex sm:flex-col sm:gap-5 bg-light-white dark:bg-secondary shadow-md rounded-t-2xl p-4 font-sans`}
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="flex w-full relative items-center">
+              <span className="absolute ml-2 pointer-events-none">
+                <Search />
+              </span>
+
+              {searchValue.length ? (
+                <span
+                  className="absolute right-2 cursor-pointer"
+                  onClick={() => setSearchValue("")}
+                >
+                  <CloseCircle input />
+                </span>
+              ) : null}
+
+              <input
+                type="text"
+                placeholder="Search Maps"
+                autoComplete="off"
+                aria-label="Search Maps"
+                className="flex w-full items-center bg-light-white-second dark:bg-light-grey placeholder-light-grey-third dark:placeholder-light-grey-second text-secondary font-sans tracking-tight dark:text-white text-lg leading-none p-2 pl-8 rounded-xl focus:outline-none"
+                spellCheck="false"
+                value={searchValue}
+                onClick={() => {
+                  setIsOpenSearchPanel(true);
+                  setShowCancel(true);
+                }}
+                onChange={(e) => {
+                  onSearchChange(e.target.value);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              />
+            </div>
+
+            {showCancel ? (
+              <span
+                className="cursor-pointer text-lg text-blue"
+                onClick={() => {
+                  setIsOpenSearchPanel(false);
+                  setShowCancel(false);
+                  setSearchValue("");
+                }}
+              >
+                {data.cancel}
+              </span>
+            ) : null}
+          </div>
+
+          {searchValue.length && !loading ? (
+            <div>
+              {searchResult?.map((place, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="w-full border-b last:border-none border-seperator dark:border-dark-seperator"
+                  >
+                    <span
+                      className="flex items-center cursor-pointer"
+                      onClick={() => handleSelectedItembyClick(place)}
+                    >
+                      <span>{getSearchedResultsTypeIcon(place.type)}</span>
+                      <div className="flex flex-col p-2">
+                        <span className="text-[17px] leading-5 tracking-tight text-secondary dark:text-white">
+                          {place?.name}
+                        </span>
+                        <span className="flex text-sm tracking-tight text-secondary dark:text-light-grey-second">
+                          {place?.address?.state}&#44;&nbsp;
+                          {place?.address?.country}
+                        </span>
+                      </div>
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          ) : searchValue.length && loading ? (
+            <Loader className="pb-40" />
+          ) : null}
+
+          {searchValue.length &&
+          !searchResult
+            .map((e) => e.name)
+            .toString()
+            .toLocaleLowerCase()
+            .includes(searchValue) &&
+          searchValue.length >= 1 ? (
+            <span className="min-h-screen flex items-center justify-center text-light-grey-third dark:text-light-grey-second text-base pb-40 rounded-lg">
+              {data.noResult}
+            </span>
+          ) : null}
+        </div>
+      </Transition>
 
       <Transition appear show={isOpenSearchModal} as={Fragment}>
         <Dialog

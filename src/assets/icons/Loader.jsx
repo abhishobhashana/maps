@@ -6,7 +6,7 @@ export default function Loader({ className }) {
 
   return (
     <div
-      className={`${className} h-screen w-full flex items-center justify-center`}
+      className={`${className} min-h-screen w-full flex items-center justify-center`}
     >
       <svg
         className="animate-spin-slow"

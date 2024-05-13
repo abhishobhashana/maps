@@ -1,5 +1,6 @@
 import { default as AppIcon } from "./AppIcon";
 import { default as Bed } from "./Bed";
+import { default as Bus } from "./Bus";
 import { default as Car } from "./Car";
 import { default as Check } from "./Check";
 import { default as Close } from "./Close";
@@ -23,14 +24,17 @@ import { default as MinusDark } from "./Minus-dark";
 import { default as Night } from "./Night";
 import { default as Parking } from "./Parking";
 import { default as Pin } from "./Pin";
+import { default as PinCircle } from "./PinCircle";
 import { default as Plus } from "./Plus";
 import { default as PlusDark } from "./Plus-dark";
 import { default as Pump } from "./Pump";
 import { default as Rain } from "./Rain";
 import { default as RainHeavy } from "./RainHeavy";
 import { default as RainNight } from "./RainNight";
+import { default as RouteModal } from "./RouteModal";
 import { default as Routes } from "./Routes";
 import { default as Search } from "./Search";
+import { default as SearchCircle } from "./SearchCircle";
 import { default as Sidemenu } from "./Sidemenu";
 import { default as Snow } from "./Snow";
 import { default as Sun } from "./Sun";
@@ -41,6 +45,7 @@ import { default as TrainMain } from "./TrainMain";
 export {
   AppIcon,
   Bed,
+  Bus,
   Car,
   Check,
   Close,
@@ -64,9 +69,11 @@ export {
   Night,
   Parking,
   Pin,
+  PinCircle,
   Plus,
   PlusDark,
   Search,
+  SearchCircle,
   Sidemenu,
   Snow,
   Sun,
@@ -74,6 +81,7 @@ export {
   Rain,
   RainHeavy,
   RainNight,
+  RouteModal,
   Routes,
   ThunderStorm,
   Train,
