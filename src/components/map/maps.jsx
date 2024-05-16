@@ -105,6 +105,7 @@ const Maps = () => {
   const [selected, setSelected] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [isSearchEmpty, setIsSearchEmpty] = useState(false);
   const [isOpenSearchModal, setIsOpenSearchModal] = useState(false);
   const [mapTypeIcon, setMapTypeIcon] = useState({
     icon: <Logo />,
@@ -161,12 +162,21 @@ const Maps = () => {
           }
         );
 
+        setIsSearchEmpty(true);
+
         if (response.ok) {
           const data = await response.json();
           const filteredData = data?.filter((place) =>
             place?.name?.toLowerCase().includes(value.toLowerCase())
           );
-          setSearchResult(filteredData);
+          setTimeout(() => {
+            setSearchResult(filteredData);
+            if (filteredData.length) {
+              setIsSearchEmpty(false);
+            } else {
+              setIsSearchEmpty(true);
+            }
+          }, 500);
           setLoading(false);
         } else {
           console.warn(response.statusText);
@@ -244,6 +254,7 @@ const Maps = () => {
     setSearchedPosition(true);
     setOpenLocationModal(true);
     setIsOpenSearchPanel(false);
+    setShowCancel(false);
     mapRef.current.flyTo(pos, 10);
     setLocationDetails({
       name: place?.name,
@@ -270,8 +281,9 @@ const Maps = () => {
         setLocationDetails({
           lat: data?.lat,
           lng: data?.lon,
-          name: data?.address?.suburb,
+          name: data?.address?.suburb || data?.address?.road,
           address: data?.display_name,
+          country: data?.address?.country,
         });
       } else {
         console.warn(response.statusText);
@@ -291,6 +303,7 @@ const Maps = () => {
           };
           setCenter(pos);
           setPosition(true);
+          setSearchedPosition(false);
           setZoom(18);
           mapRef.current.flyTo(pos, 18);
           getLocationDetails(pos.lat, pos.lng);
@@ -374,7 +387,7 @@ const Maps = () => {
                     {position ? data.myLocation : locationDetails?.name}
                   </span>
                   <span className="leading-6 text-base text-light-grey-third dark:text-light-grey-second">
-                    {locationDetails.country}
+                    {locationDetails?.country}
                   </span>
                 </div>
                 <span
@@ -470,6 +483,9 @@ const Maps = () => {
                               onClick={() => {
                                 setOpenLocationModal(false);
                                 setIsOpenSearchPanel(true);
+                                if (searchValue.length) {
+                                  setShowCancel(true);
+                                }
                               }}
                             >
                               <CloseCircle />
@@ -632,13 +648,7 @@ const Maps = () => {
                 </div>
               ) : null}
 
-              {searchValue.length &&
-              !searchResult
-                .map((e) => e.name)
-                .toString()
-                .toLocaleLowerCase()
-                .includes(searchValue) &&
-              searchValue.length >= 1 ? (
+              {isSearchEmpty && !searchResult.length ? (
                 <span className="min-h-screen flex items-center justify-center text-light-grey-third dark:text-light-grey-second text-base pb-40 rounded-lg">
                   {data.noResult}
                 </span>
@@ -696,14 +706,14 @@ const Maps = () => {
                         className={({ selected }) =>
                           `${
                             selected ? "border-2 border-dark-blue" : ""
-                          } relative cursor-pointer select-none rounded-xl w-full border-box object-cover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                          } relative cursor-pointer select-none rounded-xl w-full border-box object-cover focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue active:bg-secondary`
                         }
                         key={items.id}
                         value={items}
                       >
                         <div className="flex flex-col w-full items-center justify-between">
                           <img
-                            className="relative h-20 w-full rounded-t-xl"
+                            className="relative h-20 w-full rounded-t-xl active:opacity-50"
                             src={items.img}
                             alt={items.name}
                           />
@@ -873,7 +883,10 @@ const Maps = () => {
               {searchValue.length ? (
                 <span
                   className="absolute right-2 cursor-pointer"
-                  onClick={() => setSearchValue("")}
+                  onClick={() => {
+                    setSearchValue("");
+                    setShowCancel(false);
+                  }}
                 >
                   <CloseCircle input />
                 </span>
@@ -943,13 +956,7 @@ const Maps = () => {
             <Loader className="pb-40" />
           ) : null}
 
-          {searchValue.length &&
-          !searchResult
-            .map((e) => e.name)
-            .toString()
-            .toLocaleLowerCase()
-            .includes(searchValue) &&
-          searchValue.length >= 1 ? (
+          {isSearchEmpty && searchResult.length ? (
             <span className="min-h-screen flex items-center justify-center text-light-grey-third dark:text-light-grey-second text-base pb-40 rounded-lg">
               {data.noResult}
             </span>
@@ -1011,12 +1018,12 @@ const Maps = () => {
                           value={items}
                           className={({ active }) =>
                             `${active ? "border-2 border-dark-blue" : ""}
-                  relative cursor-pointer select-none rounded-lg w-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue`
+                  relative cursor-pointer select-none rounded-lg w-full focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-dark-blue active:bg-secondary`
                           }
                         >
                           <div className="flex flex-col w-full items-center justify-between">
                             <img
-                              className="relative h-[4.5rem] w-full rounded-t-lg"
+                              className="relative h-[4.5rem] w-full rounded-t-lg active:opacity-50"
                               src={items.img}
                             />
                             <span className="rounded-b-lg p-3 w-full truncate text-base bg-white dark:bg-[#414141] text-[1.063rem] text-secondary dark:text-white leading-none">
