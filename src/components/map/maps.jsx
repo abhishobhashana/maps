@@ -11,20 +11,16 @@ import { UseModeChecker } from "../../useModeChecker";
 import { Dialog, Listbox, RadioGroup, Transition } from "@headlessui/react";
 import {
   Bus,
-  Check,
   Close,
   CloseCircle,
   Globe,
-  Layer,
   Loader,
   Location,
   LocationDenied,
   LocationFill,
   Logo,
   MapIcon,
-  Pin,
   PinCircle,
-  RouteModal,
   Routes,
   Search,
   SearchCircle,
@@ -39,10 +35,6 @@ import ExploreDark from "../../assets/images/Explore-dark.png";
 import Satellite from "../../assets/images/Satellite.png";
 import LocationMarker from "../../assets/images/LocationMarker.png";
 import LocationCircle from "../../assets/images/LocationCircle.png";
-// import Driving from "../../assets/icons/Driving.png";
-// import DrivingDark from "../../assets/icons/Driving-dark.jpeg";
-// import Transit from "../../assets/icons/Transit.png";
-// import TransitDark from "../../assets/icons/Transit-dark.jpeg";
 
 const Maps = () => {
   const mode = UseModeChecker();
@@ -65,18 +57,8 @@ const Maps = () => {
       name: data.explore,
       img: mode ? ExploreDark : Explore,
     },
-    // {
-    //   id: 1,
-    //   name: data.driving,
-    //   img: mode ? DrivingDark : Driving,
-    // },
-    // {
-    //   id: 2,
-    //   name: data.transit,
-    //   img: mode ? TransitDark : Transit,
-    // },
     {
-      id: 2,
+      id: 1,
       name: data.satellite,
       img: Satellite,
     },
@@ -97,37 +79,18 @@ const Maps = () => {
   const [mapTypeLayer, setMapTypeLayer] = useState(mapTypes[0]);
   const [position, setPosition] = useState(false);
   const [searchedPosition, setSearchedPosition] = useState(false);
-  const [isCenterChanged, setIsCenterChanged] = useState(false);
   const [isOpenSearchPanel, setIsOpenSearchPanel] = useState(true);
   const [showCancel, setShowCancel] = useState(false);
   const [openLocationModal, setOpenLocationModal] = useState(false);
   const [openSideMenu, setOpenSideMenu] = useState(false);
-  const [selected, setSelected] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
   const [isSearchEmpty, setIsSearchEmpty] = useState(false);
   const [isOpenSearchModal, setIsOpenSearchModal] = useState(false);
+  const [recents, setRecents] = useState([]);
   const [mapTypeIcon, setMapTypeIcon] = useState({
     icon: <Logo />,
   });
-
-  const menuItems = [
-    {
-      id: 0,
-      name: data.temp,
-      icon: <Pin />,
-    },
-    {
-      id: 1,
-      name: data.air,
-      icon: <Pin />,
-    },
-    {
-      id: 2,
-      name: data.wind,
-      icon: <Pin />,
-    },
-  ];
 
   const locationIndicatorIcon = L.icon({
     iconUrl: LocationCircle,
@@ -162,6 +125,47 @@ const Maps = () => {
           }
         );
 
+        if (response.ok) {
+          const data = await response.json();
+          const filteredData = data?.filter((place) =>
+            place?.name?.toLowerCase().includes(value.toLowerCase())
+          );
+
+          setTimeout(() => {
+            if (filteredData.length > 0) {
+              setSearchResult(filteredData);
+              setIsSearchEmpty(false);
+            } else {
+              setSearchResult([]);
+              setIsSearchEmpty(true);
+            }
+            setLoading(false);
+          }, 500);
+        } else {
+          console.warn(response.statusText);
+        }
+      } catch (e) {
+        console.warn("Error found", e);
+        setLoading(false);
+      }
+    } else {
+      setSearchResult([]);
+      setIsSearchEmpty(false);
+      setLoading(false);
+    }
+  }, 300);
+
+  const debounceSearchRoutes = debounce(
+    async (from_lat, from_lng, to_lat, to_lng) => {
+      setLoading(true);
+      try {
+        const response = await fetch(
+          `https://routing.openstreetmap.de/routed-car/route/v1/driving/${from_lng},${from_lat};${to_lng},${to_lat}?overview=false&alternatives=true&steps=true`,
+          {
+            method: "GET",
+          }
+        );
+
         setIsSearchEmpty(true);
 
         if (response.ok) {
@@ -184,8 +188,9 @@ const Maps = () => {
       } catch (e) {
         console.warn("error found", e);
       }
-    }
-  }, 300);
+    },
+    300
+  );
 
   const getSearchedResultsTypeIcon = (type) => {
     switch (type) {
@@ -223,7 +228,7 @@ const Maps = () => {
         });
         break;
 
-      case 2:
+      case 1:
         setMapType(satellite);
         setMapTypeIcon({
           icon: <Globe />,
@@ -256,13 +261,44 @@ const Maps = () => {
     setIsOpenSearchPanel(false);
     setShowCancel(false);
     mapRef.current.flyTo(pos, 10);
-    setLocationDetails({
+    const details = {
       name: place?.name,
       country: place?.address?.country,
       address: place?.display_name,
       lat: place?.lat,
       lng: place?.lon,
+    };
+    setLocationDetails(details);
+    setRecents((prev) => {
+      if (prev.some((item) => item.name === details.name)) {
+        return prev;
+      } else {
+        const newRecents = [details, ...prev];
+        return newRecents;
+      }
     });
+  };
+
+  const handleRecentSelectedItembyClick = (place) => {
+    const pos = {
+      lat: Number(place?.lat),
+      lng: Number(place?.lng),
+    };
+    setCenter(pos);
+    setPosition(false);
+    setSearchedPosition(true);
+    setOpenLocationModal(true);
+    setIsOpenSearchPanel(false);
+    setShowCancel(false);
+    mapRef.current.flyTo(pos, 10);
+    const details = {
+      name: place?.name,
+      country: place?.country,
+      address: place?.address,
+      lat: place?.lat,
+      lng: place?.lng,
+    };
+    setLocationDetails(details);
   };
 
   const getLocationDetails = async (lat, lng) => {
@@ -407,14 +443,10 @@ const Maps = () => {
                       <span className="text-xs text-light-grey-third dark:text-light-grey-second">
                         {data.address}
                       </span>
-                      <span className="min-w-[12rem] w-full tracking-tight text-sm text-secondary dark:text-white">
+                      <span className="min-w-[16rem] w-full tracking-tight text-sm text-secondary dark:text-white">
                         {locationDetails.address}
                       </span>
                     </div>
-
-                    <span className="w-fit cursor-pointer">
-                      <RouteModal />
-                    </span>
                   </div>
                   <span className="ml-4 border border-seperator/10 dark:border-dark-seperator" />
                   <div className="p-4 pt-0 flex flex-col font-sans">
@@ -505,10 +537,6 @@ const Maps = () => {
                                     {locationDetails.address}
                                   </span>
                                 </div>
-
-                                <span className="w-fit cursor-pointer">
-                                  <RouteModal />
-                                </span>
                               </div>
                               <span className="ml-4 border border-seperator/10 dark:border-dark-seperator" />
                               <div className="p-4 pt-0 flex flex-col font-sans">
@@ -591,7 +619,7 @@ const Maps = () => {
                         >
                           <span>{getSearchedResultsTypeIcon(place.type)}</span>
                           <div className="flex flex-col p-2">
-                            <span className="text-[17px] leading-5 tracking-tight text-secondary dark:text-white">
+                            <span className="text-[1.063rem] leading-5 tracking-tight text-secondary dark:text-white">
                               {place?.name}
                             </span>
                             <span className="flex text-sm tracking-tight text-secondary dark:text-light-grey-second">
@@ -608,42 +636,49 @@ const Maps = () => {
                 <Loader className="pb-40" />
               ) : null}
 
-              {!searchValue.length ? (
-                <div className="flex flex-col gap-5">
+              {!searchResult.length && recents.length ? (
+                <div className="w-full flex flex-col gap-5">
                   <div className="flex flex-col">
-                    <span className="p-0 pb-2 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second border-b-2 border-seperator dark:border-dark-seperator">
-                      {data.recents}
-                    </span>
-                    <div className="flex items-center border-b border-seperator dark:border-dark-seperator">
-                      <Search />
-                      <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
-                        Junagadh
+                    <div className="flex justify-between border-b-2 border-seperator dark:border-dark-seperator">
+                      <span className="p-0 pb-2 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second">
+                        {data.recents}
                       </span>
-                    </div>
-                    <div className="flex items-center">
-                      <Search />
-                      <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
-                        Ahmedabad
-                      </span>
-                    </div>
-                  </div>
 
-                  <div className="flex flex-col">
-                    <span className="p-0 pb-2 text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second border-b-2 border-seperator dark:border-dark-seperator">
-                      {data.favorites}
-                    </span>
-                    <div className="flex items-center border-b border-seperator dark:border-dark-seperator">
-                      <Search />
-                      <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
-                        Junagadh
+                      <span
+                        className="text-base tracking-tight text-blue cursor-pointer"
+                        onClick={() => {
+                          setIsOpenSearchPanel(false);
+                          setShowCancel(false);
+                          setRecents([]);
+                        }}
+                      >
+                        {data.clear}
                       </span>
                     </div>
-                    <div className="flex items-center">
-                      <Search />
-                      <span className="p-2.5 text-base font-sansMedium tracking-tight text-secondary dark:text-white">
-                        Ahmedabad
-                      </span>
-                    </div>
+
+                    {recents &&
+                      recents.map((e, index) => {
+                        return (
+                          <div
+                            className="flex items-center border-b last:border-0 border-seperator dark:border-dark-seperator"
+                            key={index}
+                            onClick={() => handleRecentSelectedItembyClick(e)}
+                          >
+                            <Search />
+                            <div className="flex items-center gap-1 p-2.5">
+                              <span className="text-base tracking-tight text-secondary dark:text-white">
+                                {e?.name}
+                              </span>
+                              <span className="text-xs tracking-tight text-secondary dark:text-light-grey-second">
+                                &#x2022;
+                              </span>
+                              <span className="text-base tracking-tight text-secondary dark:text-light-grey-second">
+                                {e.country}
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
                   </div>
                 </div>
               ) : null}
@@ -736,53 +771,6 @@ const Maps = () => {
           >
             <Routes />
           </button>
-
-          <Listbox as="div" by="id" value={selected} onChange={setSelected}>
-            {({ open }) => (
-              <div className="relative mt-1.5">
-                <Listbox.Button className="relative w-fit cursor-ponter focus:outline-none">
-                  <Layer />
-                </Listbox.Button>
-                <Transition
-                  show={open}
-                  enter="transition ease-out duration-200"
-                  enterFrom="transform opacity-0 scale-50"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-150"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-50"
-                >
-                  <Listbox.Options className="absolute mt-6 right-0 max-h-60 overflow-auto rounded-xl backdrop-blur-sm bg-light-white/90 dark:bg-secondary/90 text-base shadow-xl focus:outline-none">
-                    {menuItems.map((items) => (
-                      <Listbox.Option
-                        className="relative cursor-pointer select-none pl-10 pr-24 py-2 font-sans border-b border-seperator dark:border-dark-seperator last:border-b-0"
-                        key={items.id}
-                        value={items}
-                      >
-                        {({ selected }) => (
-                          <>
-                            {selected && (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-4">
-                                <Check />
-                              </span>
-                            )}
-
-                            <span className="block truncate font-sans text-base text-secondary dark:text-white">
-                              {items.name}
-                            </span>
-
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-4">
-                              {items.icon}
-                            </span>
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            )}
-          </Listbox>
         </div>
       </div>
 
@@ -806,55 +794,6 @@ const Maps = () => {
             }
             onClick={handleLocation}
           />
-        </div>
-
-        <div className="bg-light-white dark:bg-secondary shadow-md rounded-xl">
-          <Listbox as="div" by="id" value={selected} onChange={setSelected}>
-            {({ open }) => (
-              <div className="relative">
-                <Listbox.Button className="map-btn relative w-fit rounded-xl cursor-ponter p-2.5 focus-visible:outline-none">
-                  <Layer />
-                </Listbox.Button>
-                <Transition
-                  show={open}
-                  enter="transition ease-out duration-200"
-                  enterFrom="transform opacity-0 scale-0"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-150"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-0"
-                >
-                  <Listbox.Options className="absolute mt-2.5 right-0 max-h-60 overflow-auto rounded-xl bg-light-white/90 dark:bg-secondary/90 backdrop-blur-sm text-base shadow-lg focus:outline-none">
-                    {menuItems.map((items) => (
-                      <Listbox.Option
-                        className="relative cursor-pointer select-none pl-10 pr-24 py-2.5 font-sans border-b border-seperator/10 dark:border-dark-seperator last:border-b-0"
-                        key={items.id}
-                        value={items}
-                      >
-                        {({ selected }) => (
-                          <>
-                            {selected && (
-                              <span className="absolute inset-y-0 left-0 flex items-center pl-4">
-                                <Check />
-                              </span>
-                            )}
-
-                            <span className="block truncate font-sans text-[17px] text-secondary dark:text-white">
-                              {items.name}
-                            </span>
-
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-4">
-                              {items.icon}
-                            </span>
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            )}
-          </Listbox>
         </div>
       </div>
 
@@ -939,7 +878,7 @@ const Maps = () => {
                     >
                       <span>{getSearchedResultsTypeIcon(place.type)}</span>
                       <div className="flex flex-col p-2">
-                        <span className="text-[17px] leading-5 tracking-tight text-secondary dark:text-white">
+                        <span className="text-[1.063rem] leading-5 tracking-tight text-secondary dark:text-white">
                           {place?.name}
                         </span>
                         <span className="flex text-sm tracking-tight text-secondary dark:text-light-grey-second">
@@ -954,6 +893,66 @@ const Maps = () => {
             </div>
           ) : searchValue.length && loading ? (
             <Loader className="pb-40" />
+          ) : null}
+
+          {!searchValue.length && recents.length ? (
+            <div className="flex flex-col gap-5">
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between p-0 pb-2.5">
+                  <span className="text-base font-sansMedium tracking-tight text-light-grey-third dark:text-light-grey-second">
+                    {data.recents}
+                  </span>
+                  {!showCancel && recents.length > 3 ? (
+                    <span
+                      className="text-base tracking-tight text-blue cursor-pointer"
+                      onClick={() => {
+                        setIsOpenSearchPanel(true);
+                        setShowCancel(true);
+                      }}
+                    >
+                      {data.more}
+                    </span>
+                  ) : null}
+
+                  {showCancel ? (
+                    <span
+                      className="text-base tracking-tight text-blue cursor-pointer"
+                      onClick={() => {
+                        setIsOpenSearchPanel(false);
+                        setShowCancel(false);
+                        setRecents([]);
+                      }}
+                    >
+                      {data.clear}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="pl-3 bg-white dark:bg-grey rounded-lg">
+                  {(showCancel ? recents : recents.slice(0, 3)).map(
+                    (e, index) => (
+                      <div
+                        className="p-3 px-0 flex items-center border-b border-seperator/10 dark:border-dark-seperator/40"
+                        key={index}
+                        onClick={() => handleRecentSelectedItembyClick(e)}
+                      >
+                        <Search />
+                        <div className="flex items-center gap-1 pl-2">
+                          <span className="text-[1.063rem] tracking-tight text-secondary dark:text-white">
+                            {e?.name}
+                          </span>
+                          <span className="text-xs tracking-tight text-secondary dark:text-light-grey-second">
+                            &#x2022;
+                          </span>
+                          <span className="text-[1.063rem] tracking-tight text-secondary dark:text-light-grey-second">
+                            {e.country}
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
           ) : null}
 
           {isSearchEmpty && searchResult.length ? (
