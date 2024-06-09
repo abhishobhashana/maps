@@ -22,35 +22,6 @@ body {
   stroke: rgba(242, 242, 242, 1);
 }
 
-.poi-info-window div {
-  font-family: "SF Pro Text";
-}
-.gm-style {
-  font: 400 11px SF Pro Text !important;
-}
-
-a[href^="http://maps.google.com/maps"]
-{
-  display: none !important;
-}
-a[href^="https://maps.google.com/maps"]
-{
-  display: none !important;
-}
-
-.gmnoprint a,
-.gmnoprint span,
-.gm-style-cc {
-  display: none;
-}
-.gmnoprint div {
-  background: none !important;
-}
-
-.gm-style iframe + div {
-  border: none !important;
-}
-
 .leaflet-pane,
 .leaflet-bottom {
   z-index: 0 !important;

@@ -931,7 +931,7 @@ const Maps = () => {
                   {(showCancel ? recents : recents.slice(0, 3)).map(
                     (e, index) => (
                       <div
-                        className="p-3 px-0 flex items-center border-b border-seperator/10 dark:border-dark-seperator/40"
+                        className="p-3 px-0 flex items-center border-b last:border-none border-seperator/10 dark:border-dark-seperator/40"
                         key={index}
                         onClick={() => handleRecentSelectedItembyClick(e)}
                       >
